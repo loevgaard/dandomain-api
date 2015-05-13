@@ -46,7 +46,7 @@ class Api {
         curl_close($ch);
 
         if($info['http_code'] != 200) {
-            throw new \RuntimeException('HTTP ERROR', $info['http_code']);
+            throw new \RuntimeException('HTTP ERROR. ' . htmlspecialchars($content), $info['http_code']);
         }
 
         return json_decode($content);
