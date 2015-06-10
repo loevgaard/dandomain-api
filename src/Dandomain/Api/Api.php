@@ -20,6 +20,10 @@ class Api {
         $this->query = "/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/GetByModifiedInterval?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s');
         return $this->run();
     }
+    public function getOrderStates() {
+        $this->query = "/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/OrderStates";
+        return $this->run();
+    }
     public function getProduct($productNumber, $siteId) {
         $this->query = "/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/" . rawurlencode($productNumber) . "/$siteId";
         return $this->run();
