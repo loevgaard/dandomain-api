@@ -2,14 +2,61 @@
 namespace Dandomain\Api;
 
 class Api {
+    /**
+     * Example: http://www.example.com
+     *
+     * @var string
+     */
     protected $host;
+
+    /**
+     * The API key from your Dandomain admin
+     *
+     * @var string
+     */
     protected $apiKey;
+
+    /**
+     * @var string
+     */
     protected $query;
+
+    /**
+     * @var bool
+     */
     protected $debug = false;
 
+    /**
+     * Can be 'xml' or 'json'
+     *
+     * @var string
+     */
+    protected $contentType = 'json';
+
+    /**
+     * Whether the result should be saved in a file
+     *
+     * @var bool
+     */
+    protected $saveResult = false;
+
+    /**
+     * The directory to store any saved results
+     *
+     * @var string
+     */
+    protected $directory;
+
+    /**
+     * The file to save any results to
+     *
+     * @var string
+     */
+    protected $file;
+
     public function __construct($host, $apiKey) {
-        $this->host = rtrim($host, '/');
-        $this->apiKey = $apiKey;
+        $this->setHost($host);
+        $this->setApiKey($apiKey);
     }
 
     public function getOrders(\DateTime $dateStart, \DateTime $dateEnd) {
@@ -44,7 +91,12 @@ class Api {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
         curl_setopt($ch, CURLOPT_TIMEOUT, 300);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: application/json"));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: " . $this->getAcceptHeader()));
+
+        if($this->saveResult) {
+            curl_setopt($ch, CURLOPT_FILE, $this->getSavePath());
+        }
+
         $content = curl_exec($ch);
         $info = curl_getinfo($ch);
         curl_close($ch);
@@ -53,7 +105,83 @@ class Api {
             throw new \RuntimeException('HTTP ERROR. ' . htmlspecialchars($content), $info['http_code']);
         }
 
-        return json_decode($content);
+        switch($this->contentType) {
+            case 'json':
+                return json_decode($content);
+                break;
+            case 'xml':
+                return new \SimpleXMLElement($content);
+                break;
+        }
+    }
+
+    protected function getAcceptHeader() {
+        if(stripos($this->contentType, 'json')) {
+            return 'application/json';
+        } else {
+            return 'application/xml';
+        }
+    }
+
+    protected function getSavePath() {
+        if(is_null($this->directory)) {
+            throw new \RuntimeException('No directory set.');
+        }
+        if(is_null($this->file)) {
+            $this->file = 'DandomainApiResult' . date('YmdHis') . '-' . uniqid() . '.txt'; // using uniqid to avoid collissions
+        }
+
+        return $this->directory . DIRECTORY_SEPARATOR . $this->file;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * @param string $apiKey
+     * @return Api
+     */
+    public function setApiKey($apiKey)
+    {
+        $this->apiKey = $apiKey;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+
+    /**
+     * @param string $contentType
+     * @return Api
+     */
+    public function setContentType($contentType)
+    {
+        $contentType = strtolower($contentType);
+
+        if(!in_array($contentType, array('json', 'xml'))) {
+            throw new \InvalidArgumentException('$contentType' . " can only be 'json' or 'xml'");
+        }
+
+        $this->contentType = $contentType;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDebug()
+    {
+        return $this->debug;
     }
 
     /**
@@ -65,4 +193,103 @@ class Api {
         $this->debug = $debug;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     * @return Api
+     */
+    public function setHost($host)
+    {
+        $host = rtrim($host, '/');
+        if(!filter_var($host, FILTER_VALIDATE_URL)) {
+            throw new \InvalidArgumentException('$host is not a valid URL');
+        }
+        $this->host = $host;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param string $query
+     * @return Api
+     */
+    public function setQuery($query)
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDirectory()
+    {
+        return $this->directory;
+    }
+
+    /**
+     * @param string $directory
+     * @return Api
+     */
+    public function setDirectory($directory)
+    {
+        $directory = rtrim($directory, '/\\');
+        if(!is_dir($directory)) {
+            throw new \InvalidArgumentException('$directory is not a valid directory');
+        }
+        $this->directory = $directory;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param string $file
+     * @return Api
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isSaveResult()
+    {
+        return $this->saveResult;
+    }
+
+    /**
+     * @param boolean $saveResult
+     * @return Api
+     */
+    public function setSaveResult($saveResult)
+    {
+        $this->saveResult = $saveResult;
+        return $this;
+    }
+
 }
