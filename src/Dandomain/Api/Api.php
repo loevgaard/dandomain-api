@@ -60,36 +60,27 @@ class Api {
     }
 
     public function getOrders(\DateTime $dateStart, \DateTime $dateEnd) {
-        $this->query = "/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/GetByDateInterval?start=" . $dateStart->format('Y-m-d') . "&end=" . $dateEnd->format('Y-m-d');
-        return $this->run();
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/GetByDateInterval?start=" . $dateStart->format('Y-m-d') . "&end=" . $dateEnd->format('Y-m-d'));
     }
     public function getOrdersInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd) {
-        $this->query = "/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/GetByModifiedInterval?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s');
-        return $this->run();
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/GetByModifiedInterval?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s'));
     }
     public function getOrderStates() {
-        $this->query = "/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/OrderStates";
-        return $this->run();
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/OrderStates");
     }
     public function getProduct($productNumber, $siteId) {
-        $this->query = "/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/" . rawurlencode($productNumber) . "/$siteId";
-        return $this->run();
-    }
-    public function getProducts() {
-        $this->query = "/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}";
-        return $this->run();
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/" . rawurlencode($productNumber) . "/$siteId");
     }
     public function getProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd, $siteId) {
-        $this->query = "/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/GetByModifiedInterval/$siteId?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s');
-        return $this->run();
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/GetByModifiedInterval/$siteId?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s'));
     }
     public function getSites() {
-        $this->query = "/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/Sites";
-        return $this->run();
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/Sites");
     }
 
-    protected function run() {
-        $url = $this->host . $this->query;
+    public function run($query) {
+        $url = $this->host . $query;
+
         if($this->debug) {
             echo "URL: " . $url . "\n";
         }
