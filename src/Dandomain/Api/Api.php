@@ -172,8 +172,8 @@ class Api {
     {
         $contentType = strtolower($contentType);
 
-        if(!in_array($contentType, array('json', 'xml'))) {
-            throw new \InvalidArgumentException('$contentType' . " can only be 'json' or 'xml'");
+        if(!in_array($contentType, array('json', 'xml', 'text'))) {
+            throw new \InvalidArgumentException('$contentType' . " can only be 'json', 'xml' or 'text'");
         }
 
         $this->contentType = $contentType;
