@@ -118,9 +118,9 @@ class Api {
     }
 
     protected function getAcceptHeader() {
-        if(stripos($this->contentType, 'json')) {
+        if(stripos($this->contentType, 'json') !== false) {
             return 'application/json';
-        } elseif(stripos($this->contentType, 'text')){
+        } elseif(stripos($this->contentType, 'text') !== false){
             return 'text/plain';
         } else {
             return 'application/xml';
