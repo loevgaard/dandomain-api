@@ -111,12 +111,17 @@ class Api {
             case 'xml':
                 return new \SimpleXMLElement($content);
                 break;
+            case 'text':
+                return $content;
+                break;
         }
     }
 
     protected function getAcceptHeader() {
         if(stripos($this->contentType, 'json')) {
             return 'application/json';
+        } elseif(stripos($this->contentType, 'text')){
+            return 'text/plain';
         } else {
             return 'application/xml';
         }
