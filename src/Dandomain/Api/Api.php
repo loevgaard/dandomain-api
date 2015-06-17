@@ -75,6 +75,10 @@ class Api {
         $this->query = "/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/" . rawurlencode($productNumber) . "/$siteId";
         return $this->run();
     }
+    public function getProducts() {
+        $this->query = "/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}";
+        return $this->run();
+    }
     public function getProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd, $siteId) {
         $this->query = "/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/GetByModifiedInterval/$siteId?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s');
         return $this->run();
