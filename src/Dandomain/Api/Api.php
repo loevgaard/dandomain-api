@@ -68,11 +68,17 @@ class Api {
     public function getOrderStates() {
         return $this->run("/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/OrderStates");
     }
+    public function getPaymentMethods($siteId) {
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/PaymentMethods/$siteId");
+    }
     public function getProduct($productNumber, $siteId) {
         return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/" . rawurlencode($productNumber) . "/$siteId");
     }
     public function getProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd, $siteId) {
         return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/GetByModifiedInterval/$siteId?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s'));
+    }
+    public function getShippingMethods($siteId) {
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/ShippingMethods/$siteId");
     }
     public function getSites() {
         return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/Sites");
