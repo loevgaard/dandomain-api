@@ -74,8 +74,8 @@ class Api {
     public function getProduct($productNumber, $siteId) {
         return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/" . rawurlencode($productNumber) . "/$siteId");
     }
-    public function getProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd, $siteId) {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/GetByModifiedInterval/$siteId?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s'));
+    public function getProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd) {
+        return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{$this->apiKey}/GetByModifiedInterval?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s'));
     }
     public function getShippingMethods($siteId) {
         return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/ShippingMethods/$siteId");
