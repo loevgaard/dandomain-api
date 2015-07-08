@@ -34,6 +34,13 @@ class Api {
     protected $contentType = 'json';
 
     /**
+     * The HTTP method used for cURL
+     *
+     * @var string
+     */
+    protected $httpMethod = 'GET';
+
+    /**
      * Whether the result should be saved in a file
      *
      * @var bool
@@ -96,6 +103,7 @@ class Api {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
         curl_setopt($ch, CURLOPT_TIMEOUT, 300);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->httpMethod);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: " . $this->getAcceptHeader()));
 
         if($this->saveResult) {
@@ -301,5 +309,27 @@ class Api {
         $this->saveResult = $saveResult;
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getHttpMethod()
+    {
+        return $this->httpMethod;
+    }
+
+    /**
+     * @param string $httpMethod
+     * @return Api
+     */
+    public function setHttpMethod($httpMethod)
+    {
+        if(!in_array($httpMethod, array('GET', 'POST', 'DELETE', 'PUT'))) {
+            throw new \InvalidArgumentException('$httpMethod not valid.');
+        }
+        $this->httpMethod = $httpMethod;
+        return $this;
+    }
+
 
 }
