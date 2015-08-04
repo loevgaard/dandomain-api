@@ -1,6 +1,11 @@
 <?php
 namespace Dandomain\Api;
 
+use Buzz\Client\Curl;
+use Buzz\Message\Request;
+use Buzz\Message\Response;
+use Dandomain\Api\Endpoint;
+
 class Api {
     /**
      * Example: http://www.example.com
@@ -61,9 +66,60 @@ class Api {
      */
     protected $file;
 
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    /**
+     * @var Response
+     */
+    protected $response;
+
+    /**
+     * These are endpoints in the Dandomain API
+     */
+
+    /**
+     * @var Endpoint\Customer
+     */
+    public $customer;
+
+    /**
+     * @var Endpoint\Order;
+     */
+    public $order;
+
+    /**
+     * @var Endpoint\Product;
+     */
+    public $product;
+
+    /**
+     * @var Endpoint\ProductData;
+     */
+    public $productData;
+
+    /**
+     * @var Endpoint\RelatedData;
+     */
+    public $relatedData;
+
+    /**
+     * @var Endpoint\Settings;
+     */
+    public $settings;
+
     public function __construct($host, $apiKey) {
         $this->setHost($host);
         $this->setApiKey($apiKey);
+
+        $this->customer     = new Endpoint\Customer($this);
+        $this->order        = new Endpoint\Order($this);
+        $this->product      = new Endpoint\Product($this);
+        $this->productData  = new Endpoint\ProductData($this);
+        $this->relatedData  = new Endpoint\RelatedData($this);
+        $this->settings     = new Endpoint\Settings($this);
     }
 
     public function getOrders(\DateTime $dateStart, \DateTime $dateEnd) {
@@ -92,6 +148,15 @@ class Api {
     }
 
     public function run($query) {
+        $request = new Request('HEAD', '/', 'http://google.com');
+        $response = new Response();
+
+        $client = new Curl();
+        $client->send($request, $response);
+
+        echo $request;
+        echo $response;
+
         $url = $this->host . $query;
 
         if($this->debug) {
@@ -328,6 +393,48 @@ class Api {
             throw new \InvalidArgumentException('$httpMethod not valid.');
         }
         $this->httpMethod = $httpMethod;
+        return $this;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        if(is_null($this->request)) {
+            $this->request = new Request(Request::METHOD_GET, '/', $this->getHost());
+        }
+        return $this->request;
+    }
+
+    /**
+     * @param Request $request
+     * @return Api
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+        return $this;
+    }
+
+    /**
+     * @return Response
+     */
+    public function getResponse()
+    {
+        if(is_null($this->response)) {
+            $this->response = new Response();
+        }
+        return $this->response;
+    }
+
+    /**
+     * @param Response $response
+     * @return Api
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
         return $this;
     }
 
