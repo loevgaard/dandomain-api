@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite>
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <var name="host" value="http://www.2trendy.dk"/>
+        <var name="apiKey" value="62653bce-08c6-4a8f-9731-6f3d6b3d41bc"/>
+        <!-- Insert a realistic interval in which you have modified at least a few products -->
+        <var name="productModificationInterval" value="PT15M"/>
+    </php>
+</phpunit>

@@ -1,10 +1,10 @@
 <?php
 namespace Dandomain\Api;
 
-use Buzz\Client\Curl;
-use Buzz\Message\Request;
-use Buzz\Message\Response;
 use Dandomain\Api\Endpoint;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 
 class Api {
     /**
@@ -122,6 +122,7 @@ class Api {
         $this->settings     = new Endpoint\Settings($this);
     }
 
+    /*
     public function getOrders(\DateTime $dateStart, \DateTime $dateEnd) {
         return $this->run("/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/GetByDateInterval?start=" . $dateStart->format('Y-m-d') . "&end=" . $dateEnd->format('Y-m-d'));
     }
@@ -146,8 +147,32 @@ class Api {
     public function getSites() {
         return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/Sites");
     }
+    */
+
+    /**
+     * @param string $method
+     * @param string $uri
+     * @param array $options
+     * @return Response
+     */
+    public function call($method = 'GET', $uri, $options = array()) {
+        $defaultOptions = array(
+            'debug' => true,
+            'headers' => array(
+                'Accept' => 'application/json',
+            ),
+        );
+
+        $options    = array_merge($defaultOptions, $options);
+        $url        = $this->getHost() . str_replace('{KEY}', $this->getApiKey(), $uri);
+        $client     = new Client();
+        $response   = $client->request($method, $url, $options);
+
+        return $response;
+    }
 
     public function run($query) {
+
         $request = new Request('HEAD', '/', 'http://google.com');
         $response = new Response();
 

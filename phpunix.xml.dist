@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite>
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <var name="host" value="insert host"/>
+        <var name="apiKey" value="insert api key"/>
+        <!-- Insert a realistic interval in which you have modified at least a few products -->
+        <var name="productModificationInterval" value="PT30M"/>
+    </php>
+</phpunit>
