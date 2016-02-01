@@ -108,7 +108,10 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataSubCategories($categoryId) {
-        $categoryId = (int)$categoryId;
+        if(!is_int($categoryId)) {
+            throw new \InvalidArgumentException('$categoryId has to be an integer');
+        }
+
         $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories/' . $categoryId);
         return $response;
     }
