@@ -318,7 +318,7 @@ class Api {
     {
         $host = rtrim($host, '/');
         if(!filter_var($host, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException('$host is not a valid URL');
+            throw new \InvalidArgumentException("'$host' is not a valid URL");
         }
         $this->host = $host;
         return $this;

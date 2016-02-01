@@ -115,8 +115,25 @@ class ProductData extends Endpoint {
     public function getProductCount() {
         throw new \RuntimeException('Should be implemented');
     }
-    public function getProductPage() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $page
+     * @param int $pageSize
+     * @return Response
+     */
+    public function getProductPage($page, $pageSize) {
+        if(!is_int($page)) {
+            throw new \InvalidArgumentException('$page has to be an integer');
+        }
+        if(!is_int($pageSize)) {
+            throw new \InvalidArgumentException('$pageSize has to be an integer');
+        }
+
+        $response = $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPage/' . $page . '/' . $pageSize
+        );
+        return $response;
     }
     public function deleteProduct() {
         throw new \RuntimeException('Should be implemented');
