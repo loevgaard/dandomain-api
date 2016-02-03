@@ -3,6 +3,7 @@ namespace Dandomain\Api;
 
 use Dandomain\Api\Endpoint;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
@@ -20,6 +21,13 @@ class Api {
      * @var string
      */
     protected $apiKey;
+
+    /**
+     * This is the HTTP client
+     *
+     * @var ClientInterface
+     */
+    protected $client;
 
     /**
      * @var string
@@ -110,9 +118,10 @@ class Api {
      */
     public $settings;
 
-    public function __construct($host, $apiKey) {
+    public function __construct($host, $apiKey, ClientInterface $client) {
         $this->setHost($host);
         $this->setApiKey($apiKey);
+        $this->client = $client;
 
         $this->customer     = new Endpoint\Customer($this);
         $this->order        = new Endpoint\Order($this);
@@ -165,8 +174,7 @@ class Api {
 
         $options    = array_merge($defaultOptions, $options);
         $url        = $this->getHost() . str_replace('{KEY}', $this->getApiKey(), $uri);
-        $client     = new Client();
-        $response   = $client->request($method, $url, $options);
+        $response   = $this->client->request($method, $url, $options);
 
         return $response;
     }

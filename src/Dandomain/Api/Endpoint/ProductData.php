@@ -1,7 +1,9 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
+use Dandomain\Api\JsonStreamingParser\Listener\ObjectListener;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\StreamWrapper;
 
 class ProductData extends Endpoint {
     /**
@@ -11,31 +13,28 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataProduct($productNumber) {
-        $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/' . rawurlencode($productNumber));
-        return $response;
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/' . rawurlencode($productNumber));
     }
 
     /**
      * Returns the products in the given category
      *
-     * @param $categoryId
+     * @param int $categoryId
      * @return Response
      */
     public function getDataProductsInCategory($categoryId) {
-        $categoryId = (int)$categoryId;
-        $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/Products/{KEY}/' . $categoryId);
-        return $response;
+        $this->assertInteger($categoryId, '$categoryId');
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/Products/{KEY}/' . $categoryId);
     }
 
     /**
      * Returns products matching the barcode
      *
-     * @param $barcode
+     * @param string $barcode
      * @return Response
      */
     public function getDataProductsByBarcode($barcode) {
-        $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByBarcode/' . rawurlencode($barcode));
-        return $response;
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByBarcode/' . rawurlencode($barcode));
     }
 
     /**
@@ -45,8 +44,7 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataProductsByModificationDate(\DateTime $date) {
-        $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByModificationDate/' . $date->format('Y-m-d'));
-        return $response;
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByModificationDate/' . $date->format('Y-m-d'));
 
     }
 
@@ -58,9 +56,9 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd) {
-        $response = $this->getMaster()->call('GET',
+        return $this->getMaster()->call(
+            'GET',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/GetByModifiedInterval?start=' . $dateStart->format('Y-m-d\TH:i:s') . '&end=' . $dateEnd->format('Y-m-d\TH:i:s'));
-        return $response;
     }
 
     /**
@@ -70,12 +68,11 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function createProduct($product) {
-        $response = $this->getMaster()->call(
+        return $this->getMaster()->call(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}',
             array('body' => $product)
         );
-        return $response;
     }
 
     /**
@@ -86,9 +83,11 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function setStockCount($productNumber, $stockCount) {
+        $this->assertString($productNumber, '$stockCount');
+        $this->assertInteger($stockCount, '$stockCount');
+
         $stockCount = (int)$stockCount;
-        $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/SetStockCount/' . rawurlencode($productNumber) . '/' . $stockCount);
-        return $response;
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/SetStockCount/' . rawurlencode($productNumber) . '/' . $stockCount);
     }
 
     /**
@@ -97,8 +96,7 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataCategories() {
-        $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories');
-        return $response;
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories');
     }
 
     /**
@@ -108,38 +106,79 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataSubCategories($categoryId) {
-        if(!is_int($categoryId)) {
-            throw new \InvalidArgumentException('$categoryId has to be an integer');
-        }
+        $this->assertInteger($categoryId, '$categoryId');
 
-        $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories/' . $categoryId);
-        return $response;
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories/' . $categoryId);
     }
+
     public function getProductCount() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductCount');
     }
 
     /**
+     * The getProductPage method retrieves a paged list of products
+     *
      * @param int $page
      * @param int $pageSize
      * @return Response
      */
     public function getProductPage($page, $pageSize) {
-        if(!is_int($page)) {
-            throw new \InvalidArgumentException('$page has to be an integer');
-        }
-        if(!is_int($pageSize)) {
-            throw new \InvalidArgumentException('$pageSize has to be an integer');
-        }
+        $this->assertInteger($page, '$page');
+        $this->assertInteger($pageSize, '$pageSize');
 
-        $response = $this->getMaster()->call(
+        return $this->getMaster()->call(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPage/' . $page . '/' . $pageSize
         );
-        return $response;
     }
-    public function deleteProduct() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * TEST TEST TEST
+     * This method will try to return entities instead of a response
+     * @TODO Use XML instead
+     * @TODO Maybe use this https://github.com/prewk/xml-string-streamer-guzzle
+     * @TODO Or this http://dk2.php.net/manual/en/function.xml-parse.php
+     *
+     * @param int $page
+     * @param int $pageSize
+     * @return Response
+     */
+    public function getProductPageAsEntities($page, $pageSize) {
+        $response = $this->getProductPage($page, $pageSize);
+        $resource = StreamWrapper::getResource($response->getBody());
+
+        $listener = new ObjectListener(function($obj) {
+            echo "DUMPING\n\n";
+            print_r($obj);
+            echo "\n\n";
+        }, function() {
+            echo "END CALLBACK\n";
+        });
+        $parser = new \JsonStreamingParser_Parser($resource, $listener);
+        $parser->parse();
+    }
+
+    /**
+     * This method will return the number of product pages given a page size of $pageSize
+     * If a shop has 10,000 products, a call with $pageSize = 100 will return 10,000 / 100 = 100
+     *
+     * @param $pageSize
+     * @return Response
+     */
+    public function getProductPageCount($pageSize) {
+        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPageCount/' . $pageSize);
+    }
+
+    /**
+     * Deletes a product with the given $productNumber
+     *
+     * @param string $productNumber
+     * @return Response
+     */
+    public function deleteProduct($productNumber) {
+        $this->assertString($productNumber, '$productNumber');
+
+        return $this->getMaster()->call('DELETE', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/' . rawurlencode($productNumber));
     }
     public function createCategory() {
         throw new \RuntimeException('Should be implemented');
@@ -167,17 +206,5 @@ class ProductData extends Endpoint {
     }
     public function patchProductSettings() {
         throw new \RuntimeException('Should be implemented');
-    }
-
-    /**
-     * This method will return the number of product pages given a page size of $pageSize
-     * If a shop has 10,000 products, a call with $pageSize = 100 will return 10,000 / 100 = 100
-     *
-     * @param $pageSize
-     * @return Response
-     */
-    public function getProductPageCount($pageSize) {
-        $response = $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPageCount/' . $pageSize);
-        return $response;
     }
 }

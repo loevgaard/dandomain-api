@@ -1,23 +1,26 @@
 {
-  "name": "loevgaard/dandomain-api",
-  "description": "Dandomain API",
-  "minimum-stability": "dev",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Joachim Løvgaard",
-      "email": "joachim@loevgaard.dk",
-      "homepage": "http://www.loevgaard.dk"
+    "name": "loevgaard/dandomain-api",
+    "description": "Dandomain API Wrapper",
+    "minimum-stability": "dev",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Joachim Løvgaard",
+            "email": "joachim@loevgaard.dk",
+            "homepage": "http://www.loevgaard.dk"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0",
+        "guzzlehttp/guzzle": "6.*",
+        "salsify/json-streaming-parser": "4.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Dandomain": "src/"
+        }
     }
-  ],
-  "require": {
-    "php": ">=5.5.0",
-    "guzzlehttp/guzzle": "*"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "4.8.*"
-  },
-  "autoload": {
-    "psr-0": { "Dandomain": "src/" }
-  }
 }
