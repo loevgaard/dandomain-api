@@ -8,8 +8,22 @@ class Product extends Endpoint {
     public function getProducts() {
         throw new \RuntimeException('Should be implemented');
     }
-    public function getProductsInCategory() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * This method will return products in the given category and site
+     *
+     * @param int $categoryId
+     * @param int $siteId
+     * @return \GuzzleHttp\Psr7\Response
+     */
+    public function getProductsInCategory($categoryId, $siteId) {
+        $this->assertInteger($categoryId, '$categoryId');
+        $this->assertInteger($siteId, '$siteId');
+
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Products/' . $categoryId . '/' . $siteId
+        );
     }
     public function getCategories() {
         throw new \RuntimeException('Should be implemented');
