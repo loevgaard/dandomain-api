@@ -34,8 +34,23 @@ class Product extends Endpoint {
     public function getProductByMetadata() {
         throw new \RuntimeException('Should be implemented');
     }
-    public function getProductsInCategoryByMetadata() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $categoryId
+     * @param array $context
+     * @return \GuzzleHttp\Psr7\Response
+     */
+    public function getProductsInCategoryByMetadata($categoryId, array $context = array()) {
+        $this->assertInteger($categoryId, '$categoryId');
+        $this->assertArray($context, '$context');
+
+        return $this->getMaster()->call(
+            'POST',
+            '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Products/' . $categoryId,
+            [
+                'body' => json_encode($context)
+            ]
+        );
     }
     public function getCategory() {
         throw new \RuntimeException('Should be implemented');

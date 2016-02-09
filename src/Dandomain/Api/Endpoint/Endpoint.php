@@ -26,7 +26,7 @@ abstract class Endpoint {
      * @param string $varName
      */
     protected function assertString($val, $varName = 'Variable') {
-        if(is_string($val)) {
+        if(!is_string($val)) {
             throw new \InvalidArgumentException("$varName must be a string");
         }
     }
@@ -38,6 +38,16 @@ abstract class Endpoint {
     protected function assertInteger($val, $varName = 'Variable') {
         if(!is_int($val)) {
             throw new \InvalidArgumentException("$varName must be an integer");
+        }
+    }
+
+    /**
+     * @param mixed $val
+     * @param string $varName
+     */
+    protected function assertArray($val, $varName = 'Variable') {
+        if(!is_array($val)) {
+            throw new \InvalidArgumentException("$varName must be an array");
         }
     }
 }
