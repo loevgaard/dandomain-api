@@ -48,7 +48,7 @@ class Product extends Endpoint {
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Products/' . $categoryId,
             [
-                'body' => json_encode($context)
+                'json' => $context
             ]
         );
     }
