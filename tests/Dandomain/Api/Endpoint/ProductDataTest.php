@@ -32,26 +32,10 @@ class ProductDataTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testGetProductPageAsEntities() {
-        $json = '[{
-            "name": "example document for wicked fast parsing of huge json docs",
-            "integer": 123,
-            "totally sweet scientific notation": -123.123e-2,
-            "unicode? you betcha!": "ú™£¢∞§\u2665",
-            "zero character": "0",
-            "null is boring": null
-        },
-        {
-            "name": "another object",
-            "cooler than first object?": true,
-            "nested object": {
-            "nested object?": true,
-            "is nested array the same combination i have on my luggage?": true,
-            "nested array": [1,2,3,4,5]
-        },
-        "false": false
-        }]';
+        $xml = "<note><to><firstname>Tove</firstname><lastname>Petersen</lastname></to><from>Jani</from><heading>Reminder</heading><body>Don't forget me this weekend!</body></note>";
+
         $mock = new MockHandler([
-            new Response(200, ['Content-Type' => 'application/json; charset=utf-8'], $json),
+            new Response(200, ['Content-Type' => 'text/xml; charset=utf-8'], $xml),
         ]);
 
         $handler = HandlerStack::create($mock);
@@ -60,5 +44,7 @@ class ProductDataTest extends \PHPUnit_Framework_TestCase
         $api = new Api('http://www.example.com', 'apikey', $client);
 
         $response = $api->productData->getProductPageAsEntities(1, 10);
+
+        return true;
     }
 }

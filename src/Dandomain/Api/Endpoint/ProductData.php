@@ -2,6 +2,7 @@
 namespace Dandomain\Api\Endpoint;
 
 use Dandomain\Api\JsonStreamingParser\Listener\ObjectListener;
+use Dandomain\Api\Xml\Reader;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\StreamWrapper;
 
@@ -138,6 +139,7 @@ class ProductData extends Endpoint {
      * @TODO Use XML instead
      * @TODO Maybe use this https://github.com/prewk/xml-string-streamer-guzzle
      * @TODO Or this http://dk2.php.net/manual/en/function.xml-parse.php
+     * @TODO Maybe create my own parser: http://php.net/manual/en/example.xml-structure.php
      *
      * @param int $page
      * @param int $pageSize
@@ -147,6 +149,33 @@ class ProductData extends Endpoint {
         $response = $this->getProductPage($page, $pageSize);
         $resource = StreamWrapper::getResource($response->getBody());
 
+        $depth = 0;
+
+        $xml_parser = xml_parser_create();
+        xml_set_element_handler($xml_parser, function ($parser, $name, $attrs)
+        {
+            global $depth;
+
+            for ($i = 0; $i < $depth; $i++) {
+                echo "  ";
+            }
+            echo "$name\n";
+            $depth++;
+        }, function ($parser, $name) {
+            global $depth;
+            $depth--;
+        });
+
+        while ($data = fread($resource, 4096)) {
+            if (!xml_parse($xml_parser, $data, feof($resource))) {
+                die(sprintf("XML error: %s at line %d",
+                    xml_error_string(xml_get_error_code($xml_parser)),
+                    xml_get_current_line_number($xml_parser)));
+            }
+        }
+        xml_parser_free($xml_parser);
+
+        /*
         $listener = new ObjectListener(function($obj) {
             echo "DUMPING\n\n";
             print_r($obj);
@@ -156,6 +185,7 @@ class ProductData extends Endpoint {
         });
         $parser = new \JsonStreamingParser_Parser($resource, $listener);
         $parser->parse();
+        */
     }
 
     /**
