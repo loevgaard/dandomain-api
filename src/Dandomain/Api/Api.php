@@ -166,7 +166,7 @@ class Api {
      */
     public function call($method = 'GET', $uri, $options = array()) {
         $defaultOptions = array(
-            'debug' => true,
+            'debug' => $this->debug,
             'headers' => array(
                 'Accept' => 'application/json',
             ),
