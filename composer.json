@@ -13,7 +13,10 @@
     "require": {
         "php": ">=5.5.0",
         "guzzlehttp/guzzle": "6.*",
-        "salsify/json-streaming-parser": "4.*"
+        "prewk/xml-string-streamer-guzzle": "*",
+        "symfony/console": "3.*",
+        "memio/memio": "~1.0",
+        "doctrine/common": "~2.6"
     },
     "require-dev": {
         "phpunit/phpunit": "4.8.*"

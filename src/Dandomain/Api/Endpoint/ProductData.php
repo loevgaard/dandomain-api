@@ -1,10 +1,12 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
-use Dandomain\Api\JsonStreamingParser\Listener\ObjectListener;
-use Dandomain\Api\Xml\Reader;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\StreamWrapper;
+use Prewk\XmlStringStreamer;
+use Prewk\XmlStringStreamer\Stream;
+use Prewk\XmlStringStreamer\Parser;
+use Dandomain\Api\Entity;
 
 class ProductData extends Endpoint {
     /**
@@ -147,45 +149,18 @@ class ProductData extends Endpoint {
      */
     public function getProductPageAsEntities($page, $pageSize) {
         $response = $this->getProductPage($page, $pageSize);
-        $resource = StreamWrapper::getResource($response->getBody());
+        $stream = new Stream\Guzzle('');
+        $stream->setGuzzleStream($response->getBody());
+        $parser = new Parser\StringWalker();
 
-        $depth = 0;
+        $streamer = new XmlStringStreamer($parser, $stream);
 
-        $xml_parser = xml_parser_create();
-        xml_set_element_handler($xml_parser, function ($parser, $name, $attrs)
-        {
-            global $depth;
+        while ($node = $streamer->getNode()) {
+            $xml = new \SimpleXMLElement($node, LIBXML_NOERROR);
+            $entity = new Entity\ProductData();
 
-            for ($i = 0; $i < $depth; $i++) {
-                echo "  ";
-            }
-            echo "$name\n";
-            $depth++;
-        }, function ($parser, $name) {
-            global $depth;
-            $depth--;
-        });
-
-        while ($data = fread($resource, 4096)) {
-            if (!xml_parse($xml_parser, $data, feof($resource))) {
-                die(sprintf("XML error: %s at line %d",
-                    xml_error_string(xml_get_error_code($xml_parser)),
-                    xml_get_current_line_number($xml_parser)));
-            }
+            yield $xml;
         }
-        xml_parser_free($xml_parser);
-
-        /*
-        $listener = new ObjectListener(function($obj) {
-            echo "DUMPING\n\n";
-            print_r($obj);
-            echo "\n\n";
-        }, function() {
-            echo "END CALLBACK\n";
-        });
-        $parser = new \JsonStreamingParser_Parser($resource, $listener);
-        $parser->parse();
-        */
     }
 
     /**
