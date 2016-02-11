@@ -2,7 +2,6 @@
 namespace Dandomain\Api\Endpoint;
 
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\StreamWrapper;
 use Prewk\XmlStringStreamer;
 use Prewk\XmlStringStreamer\Stream;
 use Prewk\XmlStringStreamer\Parser;
@@ -157,7 +156,7 @@ class ProductData extends Endpoint {
 
         while ($node = $streamer->getNode()) {
             $xml = new \SimpleXMLElement($node, LIBXML_NOERROR);
-            $entity = new Entity\ProductData();
+            //$entity = new Entity\ProductData();
 
             yield $xml;
         }
