@@ -5,8 +5,11 @@ class Order extends Endpoint {
     public function createOrder() {
         throw new \RuntimeException('Should be implemented');
     }
-    public function getOrders() {
-        throw new \RuntimeException('Should be implemented');
+    public function getOrders(\DateTime $dateStart, \DateTime $dateEnd) {
+        return $this->getMaster()->call(
+            'GET',
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByDateInterval?start=%s&end=%s', $dateStart->format('Y-m-d'), $dateEnd->format('Y-m-d'))
+        );
     }
     public function getOrder() {
         throw new \RuntimeException('Should be implemented');
