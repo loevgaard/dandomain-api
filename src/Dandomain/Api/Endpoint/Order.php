@@ -5,6 +5,12 @@ class Order extends Endpoint {
     public function createOrder() {
         throw new \RuntimeException('Should be implemented');
     }
+
+    /**
+     * @param \DateTime $dateStart
+     * @param \DateTime $dateEnd
+     * @return \GuzzleHttp\Psr7\Response
+     */
     public function getOrders(\DateTime $dateStart, \DateTime $dateEnd) {
         return $this->getMaster()->call(
             'GET',

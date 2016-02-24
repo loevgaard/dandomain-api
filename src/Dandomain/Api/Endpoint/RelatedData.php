@@ -2,31 +2,102 @@
 namespace Dandomain\Api\Endpoint;
 
 class RelatedData extends Endpoint {
+    /**
+     * @return \GuzzleHttp\Psr7\Response
+     */
     public function getManufacturers() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Manufacturers'
+        );
     }
+
+    /**
+     * @return \GuzzleHttp\Psr7\Response
+     */
     public function getPeriods() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Periods'
+        );
     }
+
+    /**
+     * @return \GuzzleHttp\Psr7\Response
+     */
     public function getProductTypes() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/ProductTypes'
+        );
     }
+
+    /**
+     * @return \GuzzleHttp\Psr7\Response
+     */
     public function getSegments() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments'
+        );
     }
-    public function getSegmentsForSite() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $siteId
+     * @return \GuzzleHttp\Psr7\Response
+     */
+    public function getSegmentsForSite($siteId) {
+        $this->assertInteger($siteId, '$siteId');
+
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments/' . $siteId
+        );
     }
+
+    /**
+     * @return \GuzzleHttp\Psr7\Response
+     */
     public function getUnits() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units'
+        );
     }
-    public function getUnitsForSite() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $siteId
+     * @return \GuzzleHttp\Psr7\Response
+     */
+    public function getUnitsForSite($siteId) {
+        $this->assertInteger($siteId, '$siteId');
+
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units/' . $siteId
+        );
     }
+
+    /**
+     * @return \GuzzleHttp\Psr7\Response
+     */
     public function getVariantGroups() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups'
+        );
     }
-    public function getVariantGroupsForSite() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $siteId
+     * @return \GuzzleHttp\Psr7\Response
+     */
+    public function getVariantGroupsForSite($siteId) {
+        $this->assertInteger($siteId, '$siteId');
+
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups/' . $siteId
+        );
     }
 }
