@@ -9,50 +9,68 @@ use Dandomain\Api\Entity;
 
 class ProductData extends Endpoint {
     /**
-     * Returns the product with product number equal to $productNumber
-     *
-     * @param $productNumber
+     * @param string $productNumber
      * @return Response
      */
     public function getDataProduct($productNumber) {
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/' . rawurlencode($productNumber));
+        $this->assertString($productNumber, '$productNumber');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s',
+                rawurlencode($productNumber)
+            )
+        );
     }
 
     /**
-     * Returns the products in the given category
-     *
      * @param int $categoryId
      * @return Response
      */
     public function getDataProductsInCategory($categoryId) {
         $this->assertInteger($categoryId, '$categoryId');
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/Products/{KEY}/' . $categoryId);
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/Products/{KEY}/%d',
+                $categoryId
+            )
+        );
     }
 
     /**
-     * Returns products matching the barcode
-     *
-     * @param string $barcode
+     * @param string $barCode
      * @return Response
      */
-    public function getDataProductsByBarcode($barcode) {
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByBarcode/' . rawurlencode($barcode));
+    public function getDataProductsByBarcode($barCode) {
+        $this->assertString($barCode, '$barCode');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByBarcode/%s',
+                rawurlencode($barCode)
+            )
+        );
     }
 
     /**
-     * Returns products modified on the specified date
-     *
      * @param \DateTime $date
      * @return Response
      */
     public function getDataProductsByModificationDate(\DateTime $date) {
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByModificationDate/' . $date->format('Y-m-d'));
-
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByModificationDate/%s',
+                $date->format('Y-m-d')
+            )
+        );
     }
 
     /**
-     * Returns the products modified in the given interval
-     *
      * @param \DateTime $dateStart
      * @param \DateTime $dateEnd
      * @return Response
@@ -60,16 +78,21 @@ class ProductData extends Endpoint {
     public function getDataProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd) {
         return $this->getMaster()->call(
             'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/GetByModifiedInterval?start=' . $dateStart->format('Y-m-d\TH:i:s') . '&end=' . $dateEnd->format('Y-m-d\TH:i:s'));
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/GetByModifiedInterval?start=%s&end=%s',
+                $dateStart->format('Y-m-d\TH:i:s'),
+                $dateEnd->format('Y-m-d\TH:i:s')
+            )
+        );
     }
 
     /**
-     * Creates a product based on the json encoded string $product
-     *
-     * @param string $product
+     * @param array $product
      * @return Response
      */
     public function createProduct($product) {
+        $this->assertArray($product, '$product');
+
         return $this->getMaster()->call(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}',
@@ -78,48 +101,58 @@ class ProductData extends Endpoint {
     }
 
     /**
-     * Sets the stock count on the specified product
-     *
      * @param string $productNumber
      * @param int $stockCount
      * @return Response
      */
     public function setStockCount($productNumber, $stockCount) {
-        $this->assertString($productNumber, '$stockCount');
+        $this->assertString($productNumber, '$productNumber');
         $this->assertInteger($stockCount, '$stockCount');
 
-        $stockCount = (int)$stockCount;
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/SetStockCount/' . rawurlencode($productNumber) . '/' . $stockCount);
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/SetStockCount/%s/%d',
+                rawurlencode($productNumber),
+                $stockCount
+            )
+        );
     }
 
     /**
-     * Returns the top level categories
-     *
      * @return Response
      */
     public function getDataCategories() {
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories'
+        );
     }
 
     /**
-     * Returns the sub categories of the category with id $categoryId
-     *
      * @param int $categoryId
      * @return Response
      */
     public function getDataSubCategories($categoryId) {
         $this->assertInteger($categoryId, '$categoryId');
 
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories/' . $categoryId);
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories/%d',
+                $categoryId
+            )
+        );
     }
 
     public function getProductCount() {
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductCount');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductCount'
+        );
     }
 
     /**
-     * The getProductPage method retrieves a paged list of products
-     *
      * @param int $page
      * @param int $pageSize
      * @return Response
@@ -130,10 +163,212 @@ class ProductData extends Endpoint {
 
         return $this->getMaster()->call(
             'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPage/' . $page . '/' . $pageSize
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPage/%d/%d',
+                $page,
+                $pageSize
+            )
         );
     }
 
+    /**
+     * This method will return the number of pages you need to iterate to get the whole catalog using a page size of $pageSize
+     * If a shop has 10,000 products, a call with $pageSize = 100 will return 10,000 / 100 = 100
+     *
+     * @param int $pageSize
+     * @return Response
+     */
+    public function getProductPageCount($pageSize) {
+        $this->assertInteger($pageSize, '$pageSize');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPageCount/%d',
+                $pageSize
+            )
+        );
+    }
+
+    /**
+     * @param string $productNumber
+     * @return Response
+     */
+    public function deleteProduct($productNumber) {
+        $this->assertString($productNumber, '$productNumber');
+
+        return $this->getMaster()->call(
+            'DELETE',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s',
+                rawurlencode($productNumber)
+            )
+        );
+    }
+
+    /**
+     * @param array $category
+     * @return Response
+     */
+    public function createCategory($category) {
+        $this->assertArray($category, '$category');
+
+        return $this->getMaster()->call(
+            'POST',
+            '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category',
+            ['body' => $category]
+        );
+    }
+
+    /**
+     * @param $categoryId
+     * @return Response
+     */
+    public function deleteCategory($categoryId) {
+        $this->assertInteger($categoryId, '$categoryId');
+
+        return $this->getMaster()->call(
+            'DELETE',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category/%d',
+                $categoryId
+            )
+        );
+    }
+
+    /**
+     * @param int $categoryId
+     * @return Response
+     */
+    public function getDataCategory($categoryId) {
+        $this->assertInteger($categoryId, '$categoryId');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category/%d',
+                $categoryId
+            )
+        );
+    }
+
+    /**
+     * @param string $productNumber
+     * @param array $product
+     * @return Response
+     */
+    public function updateProduct($productNumber, $product) {
+        $this->assertString($productNumber, '$productNumber');
+        $this->assertArray($product, '$product');
+
+        return $this->getMaster()->call(
+            'PUT',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{ID}',
+                rawurlencode($productNumber)
+            ),
+            ['body' => $product]
+        );
+    }
+
+    /**
+     * @param string $productNumber
+     * @param array $product
+     * @return Response
+     */
+    public function patchProduct($productNumber, $product) {
+        $this->assertString($productNumber, '$productNumber');
+        $this->assertArray($product, '$product');
+
+        return $this->getMaster()->call(
+            'PATCH',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{PRODUCTNUMBER}',
+                rawurlencode($productNumber)
+            ),
+            ['body' => $product]
+        );
+    }
+
+    /**
+     * @param string $productNumber
+     * @param array $price
+     * @return Response
+     */
+    public function createPrice($productNumber, $price) {
+        $this->assertString($productNumber, '$productNumber');
+        $this->assertArray($price, '$price');
+
+        return $this->getMaster()->call(
+            'POST',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{PRODUCTNUMBER}/Prices',
+                rawurlencode($productNumber)
+            ),
+            ['body' => $price]
+        );
+    }
+
+    /**
+     * @param string $productNumber
+     * @param array $price
+     * @return Response
+     */
+    public function deletePrice($productNumber, $price) {
+        $this->assertString($productNumber, '$productNumber');
+        $this->assertArray($price, '$price');
+
+        return $this->getMaster()->call(
+            'DELETE',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices',
+                rawurlencode($productNumber)
+            ),
+            ['body' => $price]
+        );
+    }
+
+    /**
+     * @param string $productNumber
+     * @return Response
+     */
+    public function getPricesForProduct($productNumber) {
+        $this->assertString($productNumber, '$productNumber');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices/List',
+                rawurlencode($productNumber)
+            )
+        );
+    }
+
+    /**
+     * @param int $siteId
+     * @param string $productNumber
+     * @param array $settings
+     * @return Response
+     */
+    public function patchProductSettings($siteId, $productNumber, $settings) {
+        $this->assertInteger($siteId, '$siteId');
+        $this->assertString($productNumber, '$productNumber');
+        $this->assertArray($settings, '$settings');
+
+        return $this->getMaster()->call(
+            'PATCH',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%d/Products/%s/Settings',
+                $siteId,
+                rawurlencode($productNumber)
+            ),
+            ['body' => $settings]
+        );
+    }
+
+    /**
+     * ENTITY METHODS
+     */
     /**
      * TEST TEST TEST
      * This method will try to return entities instead of a response
@@ -160,55 +395,5 @@ class ProductData extends Endpoint {
 
             yield $xml;
         }
-    }
-
-    /**
-     * This method will return the number of product pages given a page size of $pageSize
-     * If a shop has 10,000 products, a call with $pageSize = 100 will return 10,000 / 100 = 100
-     *
-     * @param $pageSize
-     * @return Response
-     */
-    public function getProductPageCount($pageSize) {
-        return $this->getMaster()->call('GET', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPageCount/' . $pageSize);
-    }
-
-    /**
-     * Deletes a product with the given $productNumber
-     *
-     * @param string $productNumber
-     * @return Response
-     */
-    public function deleteProduct($productNumber) {
-        $this->assertString($productNumber, '$productNumber');
-
-        return $this->getMaster()->call('DELETE', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/' . rawurlencode($productNumber));
-    }
-    public function createCategory() {
-        throw new \RuntimeException('Should be implemented');
-    }
-    public function deleteCategory() {
-        throw new \RuntimeException('Should be implemented');
-    }
-    public function getDataCategory() {
-        throw new \RuntimeException('Should be implemented');
-    }
-    public function updateProduct() {
-        throw new \RuntimeException('Should be implemented');
-    }
-    public function patchProduct() {
-        throw new \RuntimeException('Should be implemented');
-    }
-    public function createPrice() {
-        throw new \RuntimeException('Should be implemented');
-    }
-    public function deletePrice() {
-        throw new \RuntimeException('Should be implemented');
-    }
-    public function getPricesForProduct() {
-        throw new \RuntimeException('Should be implemented');
-    }
-    public function patchProductSettings() {
-        throw new \RuntimeException('Should be implemented');
     }
 }

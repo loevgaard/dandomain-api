@@ -1,29 +1,132 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
+use GuzzleHttp\Psr7\Response;
+
 class Customer extends Endpoint {
-    public function getCustomer() {
-        throw new \RuntimeException('Should be implemented');
+    /**
+     * @param int $customerId
+     * @return Response
+     */
+    public function getCustomer($customerId) {
+        $this->assertInteger($customerId, '$customerId');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
+                $customerId
+            )
+        );
     }
-    public function getCustomerByEmail() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param string $email
+     * @return Response
+     */
+    public function getCustomerByEmail($email) {
+        $this->assertString($email, '$email');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerByEmail?email=%s',
+                rawurlencode($email)
+            )
+        );
     }
-    public function createCustomer() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param array $customer
+     * @return Response
+     */
+    public function createCustomer($customer) {
+        $this->assertArray($customer, '$customer');
+
+        return $this->getMaster()->call(
+            'POST',
+            '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}',
+            array('body' => $customer)
+        );
     }
-    public function updateCustomer() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $customerId
+     * @param array $customer
+     * @return Response
+     */
+    public function updateCustomer($customerId, $customer) {
+        $this->assertInteger($customerId, '$customerId');
+        $this->assertArray($customer, '$customer');
+
+        return $this->getMaster()->call(
+            'PUT',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
+                $customerId
+            ),
+            array('body' => $customer)
+        );
     }
-    public function deleteCustomer() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $customerId
+     * @return Response
+     */
+    public function deleteCustomer($customerId) {
+        $this->assertInteger($customerId, '$customerId');
+
+        return $this->getMaster()->call(
+            'DELETE',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
+                $customerId
+            )
+        );
     }
+
+    /**
+     * @return Response
+     */
     public function getCustomerGroups() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/CustomerGroup'
+        );
     }
-    public function updateCustomerDiscount () {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $customerId
+     * @param array $customerDiscount
+     * @return Response
+     */
+    public function updateCustomerDiscount($customerId, $customerDiscount) {
+        $this->assertInteger($customerId, '$customerId');
+        $this->assertArray($customerDiscount, '$customerDiscount');
+
+        return $this->getMaster()->call(
+            'POST',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/UpdateCustomerDiscount/%d',
+                $customerId
+            ),
+            array('body' => $customerDiscount)
+        );
     }
-    public function getCustomerDiscount () {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $customerId
+     * @return Response
+     */
+    public function getCustomerDiscount($customerId) {
+        $this->assertInteger($customerId, '$customerId');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerDiscount/%d',
+                $customerId
+            )
+        );
     }
 }

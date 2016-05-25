@@ -131,33 +131,6 @@ class Api {
         $this->settings     = new Endpoint\Settings($this);
     }
 
-    /*
-    public function getOrders(\DateTime $dateStart, \DateTime $dateEnd) {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/GetByDateInterval?start=" . $dateStart->format('Y-m-d') . "&end=" . $dateEnd->format('Y-m-d'));
-    }
-    public function getOrdersInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd) {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/GetByModifiedInterval?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s'));
-    }
-    public function getOrderStates() {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/OrderService/{$this->apiKey}/OrderStates");
-    }
-    public function getPaymentMethods($siteId) {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/PaymentMethods/$siteId");
-    }
-    public function getProduct($productNumber, $siteId) {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductService/{$this->apiKey}/" . rawurlencode($productNumber) . "/$siteId");
-    }
-    public function getProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd) {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{$this->apiKey}/GetByModifiedInterval?start=" . $dateStart->format('Y-m-d\TH:i:s') . "&end=" . $dateEnd->format('Y-m-d\TH:i:s'));
-    }
-    public function getShippingMethods($siteId) {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/ShippingMethods/$siteId");
-    }
-    public function getSites() {
-        return $this->run("/admin/WEBAPI/Endpoints/v1_0/SettingService/{$this->apiKey}/Sites");
-    }
-    */
-
     /**
      * @param string $method
      * @param string $uri
@@ -177,56 +150,6 @@ class Api {
         $response   = $this->client->request($method, $url, $options);
 
         return $response;
-    }
-
-    public function run($query) {
-
-        $request = new Request('HEAD', '/', 'http://google.com');
-        $response = new Response();
-
-        $client = new Curl();
-        $client->send($request, $response);
-
-        echo $request;
-        echo $response;
-
-        $url = $this->host . $query;
-
-        if($this->debug) {
-            echo "URL: " . $url . "\n";
-        }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 300);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->httpMethod);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array("Accept: " . $this->getAcceptHeader()));
-
-        if($this->saveResult) {
-            curl_setopt($ch, CURLOPT_FILE, $this->getSavePath());
-        }
-
-        $content = curl_exec($ch);
-        $info = curl_getinfo($ch);
-        curl_close($ch);
-
-        if($info['http_code'] != 200) {
-            throw new \RuntimeException('HTTP ERROR. ' . htmlspecialchars($content), $info['http_code']);
-        }
-
-        switch($this->contentType) {
-            case 'json':
-                return json_decode($content);
-                break;
-            case 'xml':
-                return new \SimpleXMLElement($content);
-                break;
-            case 'text':
-                return $content;
-                break;
-        }
     }
 
     protected function getAcceptHeader() {

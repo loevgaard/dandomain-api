@@ -1,9 +1,11 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
+use GuzzleHttp\Psr7\Response;
+
 class RelatedData extends Endpoint {
     /**
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getManufacturers() {
         return $this->getMaster()->call(
@@ -13,7 +15,7 @@ class RelatedData extends Endpoint {
     }
 
     /**
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getPeriods() {
         return $this->getMaster()->call(
@@ -23,7 +25,7 @@ class RelatedData extends Endpoint {
     }
 
     /**
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getProductTypes() {
         return $this->getMaster()->call(
@@ -33,7 +35,7 @@ class RelatedData extends Endpoint {
     }
 
     /**
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getSegments() {
         return $this->getMaster()->call(
@@ -44,19 +46,22 @@ class RelatedData extends Endpoint {
 
     /**
      * @param int $siteId
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getSegmentsForSite($siteId) {
         $this->assertInteger($siteId, '$siteId');
 
         return $this->getMaster()->call(
             'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments/' . $siteId
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments/%d',
+                $siteId
+            )
         );
     }
 
     /**
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getUnits() {
         return $this->getMaster()->call(
@@ -67,19 +72,22 @@ class RelatedData extends Endpoint {
 
     /**
      * @param int $siteId
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getUnitsForSite($siteId) {
         $this->assertInteger($siteId, '$siteId');
 
         return $this->getMaster()->call(
             'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units/' . $siteId
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units/%d',
+                $siteId
+            )
         );
     }
 
     /**
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getVariantGroups() {
         return $this->getMaster()->call(
@@ -90,14 +98,17 @@ class RelatedData extends Endpoint {
 
     /**
      * @param int $siteId
-     * @return \GuzzleHttp\Psr7\Response
+     * @return Response
      */
     public function getVariantGroupsForSite($siteId) {
         $this->assertInteger($siteId, '$siteId');
 
         return $this->getMaster()->call(
             'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups/' . $siteId
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups/%d',
+                $siteId
+            )
         );
     }
 }
