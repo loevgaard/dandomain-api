@@ -3,4 +3,4 @@
 composer.lock
 /.idea
 phpunit.phar
-phpunit.xml
+/phpunit.xml
