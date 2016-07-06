@@ -4,8 +4,12 @@ namespace Dandomain\Api\Endpoint;
 use GuzzleHttp\Psr7\Response;
 
 class Order extends Endpoint {
-    public function createOrder() {
-        throw new \RuntimeException('Should be implemented');
+    public function createOrder($obj) {
+        return $this->getMaster()->call(
+            'POST',
+            '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}',
+            ['body' => $obj]
+        );
     }
 
     /**
