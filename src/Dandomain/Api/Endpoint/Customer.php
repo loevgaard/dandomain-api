@@ -46,7 +46,7 @@ class Customer extends Endpoint {
         return $this->getMaster()->call(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}',
-            array('body' => $customer)
+            ['json' => $customer]
         );
     }
 
@@ -65,7 +65,7 @@ class Customer extends Endpoint {
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
                 $customerId
             ),
-            array('body' => $customer)
+            ['json' => $customer]
         );
     }
 
@@ -110,7 +110,7 @@ class Customer extends Endpoint {
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/UpdateCustomerDiscount/%d',
                 $customerId
             ),
-            array('body' => $customerDiscount)
+            ['json' => $customerDiscount]
         );
     }
 

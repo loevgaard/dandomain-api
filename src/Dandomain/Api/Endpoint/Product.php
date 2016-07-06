@@ -227,7 +227,7 @@ class Product extends Endpoint {
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/FindProductsByProductNumbers/%d',
                 $siteId
             ),
-            ['body' => $productNumbers]
+            ['json' => $productNumbers]
         );
     }
 

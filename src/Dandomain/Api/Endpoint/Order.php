@@ -8,7 +8,7 @@ class Order extends Endpoint {
         return $this->getMaster()->call(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}',
-            ['body' => $obj]
+            ['json' => $obj]
         );
     }
 

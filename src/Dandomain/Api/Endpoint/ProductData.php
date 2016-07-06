@@ -96,7 +96,7 @@ class ProductData extends Endpoint {
         return $this->getMaster()->call(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}',
-            array('body' => $product)
+            ['json' => $product]
         );
     }
 
@@ -216,7 +216,7 @@ class ProductData extends Endpoint {
         return $this->getMaster()->call(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category',
-            ['body' => $category]
+            ['json' => $category]
         );
     }
 
@@ -267,7 +267,7 @@ class ProductData extends Endpoint {
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{ID}',
                 rawurlencode($productNumber)
             ),
-            ['body' => $product]
+            ['json' => $product]
         );
     }
 
@@ -286,7 +286,7 @@ class ProductData extends Endpoint {
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{PRODUCTNUMBER}',
                 rawurlencode($productNumber)
             ),
-            ['body' => $product]
+            ['json' => $product]
         );
     }
 
@@ -305,7 +305,7 @@ class ProductData extends Endpoint {
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{PRODUCTNUMBER}/Prices',
                 rawurlencode($productNumber)
             ),
-            ['body' => $price]
+            ['json' => $price]
         );
     }
 
@@ -324,7 +324,7 @@ class ProductData extends Endpoint {
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices',
                 rawurlencode($productNumber)
             ),
-            ['body' => $price]
+            ['json' => $price]
         );
     }
 
@@ -362,7 +362,7 @@ class ProductData extends Endpoint {
                 $siteId,
                 rawurlencode($productNumber)
             ),
-            ['body' => $settings]
+            ['json' => $settings]
         );
     }
 
