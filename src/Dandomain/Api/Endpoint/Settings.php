@@ -1,23 +1,75 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
+use GuzzleHttp\Psr7\Response;
+
 class Settings extends Endpoint {
+    /**
+     * @return Response
+     */
     public function getSites() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Sites'
+        );
     }
+
+    /**
+     * @return Response
+     */
     public function getCountries() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Countries'
+        );
     }
+
+    /**
+     * @return Response
+     */
     public function getCurrencies() {
-        throw new \RuntimeException('Should be implemented');
+        return $this->getMaster()->call(
+            'GET',
+            '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Currencies'
+        );
     }
-    public function getPaymentMethods() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $siteId
+     * @return Response
+     */
+    public function getPaymentMethods($siteId) {
+        $this->assertInteger($siteId, '$siteId');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/PaymentMethods/%d', $siteId)
+        );
     }
-    public function getShippingMethods() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $siteId
+     * @return Response
+     */
+    public function getShippingMethods($siteId) {
+        $this->assertInteger($siteId, '$siteId');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/ShippingMethods/%d', $siteId)
+        );
     }
-    public function getCompanyInfo() {
-        throw new \RuntimeException('Should be implemented');
+
+    /**
+     * @param int $siteId
+     * @return Response
+     */
+    public function getCompanyInfo($siteId) {
+        $this->assertInteger($siteId, '$siteId');
+
+        return $this->getMaster()->call(
+            'GET',
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/CompanyInfo/%d', $siteId)
+        );
     }
 }
