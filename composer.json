@@ -22,6 +22,7 @@
         "memio/memio": "~1.0"
     },
     "autoload": {
+        "files": ["src/Dandomain/Api/functions.php"],
         "psr-0": {
             "Dandomain": "src/"
         }

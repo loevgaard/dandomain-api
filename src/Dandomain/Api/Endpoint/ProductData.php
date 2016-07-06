@@ -110,7 +110,7 @@ class ProductData extends Endpoint {
         $this->assertInteger($stockCount, '$stockCount');
 
         return $this->getMaster()->call(
-            'GET',
+            'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/SetStockCount/%s/%d',
                 rawurlencode($productNumber),
