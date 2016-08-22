@@ -57,10 +57,10 @@ class ProductData extends Endpoint {
     }
 
     /**
-     * @param \DateTime $date
+     * @param \DateTimeInterface $date
      * @return Response
      */
-    public function getDataProductsByModificationDate(\DateTime $date) {
+    public function getDataProductsByModificationDate(\DateTimeInterface $date) {
         return $this->getMaster()->call(
             'GET',
             sprintf(
@@ -71,11 +71,11 @@ class ProductData extends Endpoint {
     }
 
     /**
-     * @param \DateTime $dateStart
-     * @param \DateTime $dateEnd
+     * @param \DateTimeInterface $dateStart
+     * @param \DateTimeInterface $dateEnd
      * @return Response
      */
-    public function getDataProductsInModifiedInterval(\DateTime $dateStart, \DateTime $dateEnd) {
+    public function getDataProductsInModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
         return $this->getMaster()->call(
             'GET',
             sprintf(

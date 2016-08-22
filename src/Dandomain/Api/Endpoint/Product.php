@@ -195,11 +195,11 @@ class Product extends Endpoint {
     }
 
     /**
-     * @param \DateTime $modificationDate
+     * @param \DateTimeInterface $modificationDate
      * @param int $siteId
      * @return Response
      */
-    public function getProductsByModificationDate(\DateTime $modificationDate, $siteId) {
+    public function getProductsByModificationDate(\DateTimeInterface $modificationDate, $siteId) {
         $this->assertInteger($siteId, '$siteId');
 
         return $this->getMaster()->call(
@@ -233,11 +233,11 @@ class Product extends Endpoint {
 
     /**
      * @param int $siteId
-     * @param \DateTime $dateStart
-     * @param \DateTime $dateEnd
+     * @param \DateTimeInterface $dateStart
+     * @param \DateTimeInterface $dateEnd
      * @return Response
      */
-    public function getProductsInModifiedInterval($siteId, \DateTime $dateStart, \DateTime $dateEnd) {
+    public function getProductsInModifiedInterval($siteId, \DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
         $this->assertInteger($siteId, '$siteId');
 
         return $this->getMaster()->call(

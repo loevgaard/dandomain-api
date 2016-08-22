@@ -13,11 +13,11 @@ class Order extends Endpoint {
     }
 
     /**
-     * @param \DateTime $dateStart
-     * @param \DateTime $dateEnd
+     * @param \DateTimeInterface $dateStart
+     * @param \DateTimeInterface $dateEnd
      * @return Response
      */
-    public function getOrders(\DateTime $dateStart, \DateTime $dateEnd) {
+    public function getOrders(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
         return $this->getMaster()->call(
             'GET',
             sprintf(
@@ -95,11 +95,11 @@ class Order extends Endpoint {
     }
 
     /**
-     * @param \DateTime $dateStart
-     * @param \DateTime $dateEnd
+     * @param \DateTimeInterface $dateStart
+     * @param \DateTimeInterface $dateEnd
      * @return Response
      */
-    public function getOrdersInModifiedInterval (\DateTime $dateStart, \DateTime $dateEnd) {
+    public function getOrdersInModifiedInterval (\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
         return $this->getMaster()->call(
             'GET',
             sprintf(
