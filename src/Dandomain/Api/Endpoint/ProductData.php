@@ -120,6 +120,48 @@ class ProductData extends Endpoint {
     }
 
     /**
+     * Will return the stock count for the specified product number
+     *
+     * @param string $productNumber
+     * @return int
+     */
+    public function getStockCount($productNumber) {
+        $product = $this->getDataProduct($productNumber);
+        return (int)$product->stockCount;
+    }
+
+    /**
+     * Will increment the stock count for the given product number
+     *
+     * @param string $productNumber
+     * @param int $amount
+     * @return Response
+     */
+    public function incrementStockCount($productNumber, $amount) {
+        $this->assertInteger($amount, '$amount');
+        $this->assertGreaterThan(0, $amount, '$amount');
+
+        $stockCount = $this->getStockCount($productNumber) + $amount;
+        return $this->setStockCount($productNumber, $stockCount);
+    }
+
+    /**
+     * Will decrement the stock count for the given product number
+     *
+     * @param string $productNumber
+     * @param int $amount
+     * @return Response
+     */
+    public function decrementStockCount($productNumber, $amount) {
+        $this->assertInteger($amount, '$amount');
+        $this->assertLessThan(0, $amount, '$amount');
+        $amount = abs($amount);
+
+        $stockCount = $this->getStockCount($productNumber) - $amount;
+        return $this->setStockCount($productNumber, $stockCount);
+    }
+
+    /**
      * @return Response
      */
     public function getDataCategories() {

@@ -46,8 +46,30 @@ abstract class Endpoint {
      * @param int $actual
      * @param string $varName
      */
-    protected function assertGreaterThan($expected, $actual, $varName = 'Variable') {
+    protected function assertLessThan($expected, $actual, $varName = 'Variable') {
+        if((int)$actual >= (int)$expected) {
+            throw new \InvalidArgumentException("$varName must be less than $expected");
+        }
+    }
+
+    /**
+     * @param int $expected
+     * @param int $actual
+     * @param string $varName
+     */
+    protected function assertLessThanOrEqual($expected, $actual, $varName = 'Variable') {
         if((int)$actual > (int)$expected) {
+            throw new \InvalidArgumentException("$varName must be less than or equal to $expected");
+        }
+    }
+
+    /**
+     * @param int $expected
+     * @param int $actual
+     * @param string $varName
+     */
+    protected function assertGreaterThan($expected, $actual, $varName = 'Variable') {
+        if((int)$actual <= (int)$expected) {
             throw new \InvalidArgumentException("$varName must be greater than $expected");
         }
     }
@@ -58,7 +80,7 @@ abstract class Endpoint {
      * @param string $varName
      */
     protected function assertGreaterThanOrEqual($expected, $actual, $varName = 'Variable') {
-        if((int)$actual >= (int)$expected) {
+        if((int)$actual < (int)$expected) {
             throw new \InvalidArgumentException("$varName must be greater than or equal to $expected");
         }
     }
