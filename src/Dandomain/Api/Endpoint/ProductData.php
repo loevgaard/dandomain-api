@@ -135,13 +135,20 @@ class ProductData extends Endpoint {
      *
      * @param string $productNumber
      * @param int $amount
-     * @return Response
+     * @return array
      */
     public function incrementOrDecrementStockCount($productNumber, $amount) {
         $this->assertInteger($amount, '$amount');
 
-        $stockCount = $this->getStockCount($productNumber) + $amount;
-        return $this->setStockCount($productNumber, $stockCount);
+        $oldStockCount = $this->getStockCount($productNumber);
+        $newStockCount = $oldStockCount + $amount;
+
+        $this->setStockCount($productNumber, $newStockCount);
+
+        return [
+            'oldStockCount' => $oldStockCount,
+            'newStockCount' => $newStockCount,
+        ];
     }
 
     /**
@@ -149,14 +156,12 @@ class ProductData extends Endpoint {
      *
      * @param string $productNumber
      * @param int $amount
-     * @return Response
+     * @return array
      */
     public function incrementStockCount($productNumber, $amount) {
         $this->assertInteger($amount, '$amount');
         $this->assertGreaterThan(0, $amount, '$amount');
-
-        $stockCount = $this->getStockCount($productNumber) + $amount;
-        return $this->setStockCount($productNumber, $stockCount);
+        return $this->incrementOrDecrementStockCount($productNumber, $amount);
     }
 
     /**
@@ -164,15 +169,12 @@ class ProductData extends Endpoint {
      *
      * @param string $productNumber
      * @param int $amount
-     * @return Response
+     * @return array
      */
     public function decrementStockCount($productNumber, $amount) {
         $this->assertInteger($amount, '$amount');
         $this->assertLessThan(0, $amount, '$amount');
-        $amount = abs($amount);
-
-        $stockCount = $this->getStockCount($productNumber) - $amount;
-        return $this->setStockCount($productNumber, $stockCount);
+        return $this->incrementOrDecrementStockCount($productNumber, $amount);
     }
 
     /**
