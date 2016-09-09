@@ -131,6 +131,20 @@ class ProductData extends Endpoint {
     }
 
     /**
+     * Will increment or decrement the stock count for the given product number
+     *
+     * @param string $productNumber
+     * @param int $amount
+     * @return Response
+     */
+    public function incrementOrDecrementStockCount($productNumber, $amount) {
+        $this->assertInteger($amount, '$amount');
+
+        $stockCount = $this->getStockCount($productNumber) + $amount;
+        return $this->setStockCount($productNumber, $stockCount);
+    }
+
+    /**
      * Will increment the stock count for the given product number
      *
      * @param string $productNumber
