@@ -126,7 +126,7 @@ class ProductData extends Endpoint {
      * @return int
      */
     public function getStockCount($productNumber) {
-        $product = $this->getDataProduct($productNumber);
+        $product = $this->getDataProduct($productNumber)->getBody()->getContents();
         return (int)$product->stockCount;
     }
 
