@@ -322,7 +322,7 @@ class ProductData extends Endpoint {
         return $this->getMaster()->call(
             'PUT',
             sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{ID}',
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s',
                 rawurlencode($productNumber)
             ),
             ['json' => $product]
@@ -341,7 +341,7 @@ class ProductData extends Endpoint {
         return $this->getMaster()->call(
             'PATCH',
             sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{PRODUCTNUMBER}',
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s',
                 rawurlencode($productNumber)
             ),
             ['json' => $product]
@@ -360,7 +360,7 @@ class ProductData extends Endpoint {
         return $this->getMaster()->call(
             'POST',
             sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/{PRODUCTNUMBER}/Prices',
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices',
                 rawurlencode($productNumber)
             ),
             ['json' => $price]
