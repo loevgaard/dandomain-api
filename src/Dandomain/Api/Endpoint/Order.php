@@ -176,4 +176,52 @@ class Order extends Endpoint {
             )
         );
     }
+
+    /******************
+     * Helper methods *
+     *****************/
+    /**
+     * Will copy an order based on the order id
+     * If the $orderLines is empty, it will also copy the order lines
+     * If the $orderState is > 0, the method will update the order state
+     * If $completeOrder is true, the method will also complate the order, otherwise it will be marked as incomplete by default
+     * Returns the new order id
+     *
+     * @param int $orderId
+     * @param array $orderLines
+     * @param int $orderState
+     * @param boolean $completeOrder
+     * @return int
+     */
+    public function copyOrder($orderId, array $orderLines = [], $orderState = 0, $completeOrder = true) {
+        $order = \GuzzleHttp\json_decode($this->getOrder($orderId)->getBody()->getContents());
+
+        $data = [
+            'siteId'            => $order->siteId,
+            'altDeliveryInfo'   => null,
+            'currencyCode'      => $order->currencyCode,
+            'customerId'        => $order->customerInfo->id,
+            'paymentId'         => $order->paymentInfo->id,
+            'shippingId'        => $order->shippingInfo->id,
+            'orderLines'        => $order->orderLines
+        ];
+
+        if(!empty($orderLines)) {
+            $data['orderLines'] = $orderLines;
+        }
+
+        $res = \GuzzleHttp\json_decode($this->createOrder($data)->getBody()->getContents());
+
+        $newOrderId = (int)$res->id;
+
+        if($completeOrder) {
+            $this->completeOrder($newOrderId);
+        }
+
+        if($orderState) {
+            $this->setOrderState($newOrderId, $orderState);
+        }
+
+        return $newOrderId;
+    }
 }
