@@ -174,6 +174,11 @@ class Api {
                     'statusCode'    => 400,
                     'match'         => '/ProductNotFound/i',
                     'exception'     => '\Dandomain\Api\Exception\ProductNotFoundException',
+                ],
+                [
+                    'statusCode'    => 400,
+                    'match'         => '/ShippingMethodNotValid/i',
+                    'exception'     => '\Dandomain\Api\Exception\ShippingMethodNotValidException',
                 ]
             ]
         ];
