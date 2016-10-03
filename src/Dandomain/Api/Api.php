@@ -169,12 +169,10 @@ class Api {
 
     protected function parseException(GuzzleException $e) {
         $exceptionMapping = [
-            [
-                'client' => [
-                    'statusCode'    => 400,
-                    'match'         => '/ProductNotFound/i',
-                    'exception'     => '\Dandomain\Api\Exception\ProductNotFoundException',
-                ]
+            'client' => [
+                'statusCode'    => 400,
+                'match'         => '/ProductNotFound/i',
+                'exception'     => '\Dandomain\Api\Exception\ProductNotFoundException',
             ]
         ];
         if($e instanceof ClientException) {
