@@ -2,8 +2,11 @@
 namespace Dandomain\Api;
 
 use Dandomain\Api\Endpoint;
+use Dandomain\Api\Exception\ProductNotFoundException;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 
@@ -136,6 +139,9 @@ class Api {
      * @param string $uri
      * @param array $options
      * @return Response
+     * @throws GuzzleException
+     * @throws ClientException
+     * @throws ProductNotFoundException
      */
     public function call($method = 'GET', $uri, $options = array()) {
         $defaultOptions = array(
@@ -147,9 +153,41 @@ class Api {
 
         $options    = array_merge($defaultOptions, $options);
         $url        = $this->getHost() . str_replace('{KEY}', $this->getApiKey(), $uri);
-        $response   = $this->client->request($method, $url, $options);
+        try {
+            $response = $this->client->request($method, $url, $options);
+        } catch (GuzzleException $e) {
+            $newException = $this->parseException($e);
+            if($newException) {
+                throw $newException;
+            }
+
+            throw $e;
+        }
 
         return $response;
+    }
+
+    protected function parseException(GuzzleException $e) {
+        $exceptionMapping = [
+            [
+                'client' => [
+                    'statusCode'    => 400,
+                    'match'         => '/ProductNotFound/i',
+                    'exception'     => '\Dandomain\Api\Exception\ProductNotFoundException',
+                ]
+            ]
+        ];
+        if($e instanceof ClientException) {
+            /** @var ClientException $item */
+            foreach ($exceptionMapping['client'] as $item) {
+                if($e->getResponse()->getStatusCode() == $item['statusCode'] && preg_match($item['match'], $e->getResponse()->getBody()->getContents())) {
+                    /** @var ClientException $newE */
+                    $newE = new $item['exception']($e->getMessage(), $e->getRequest(), $e->getResponse(), $e, $e->getHandlerContext());
+                    return $newE;
+                }
+            }
+        }
+        return false;
     }
 
     protected function getAcceptHeader() {
