@@ -171,7 +171,7 @@ class Api {
         $exceptionMapping = [
             'client' => [
                 [
-                    'statusCode'    => 400,
+                    'statusCode'    => 404,
                     'match'         => '/ProductNotFound/i',
                     'exception'     => '\Dandomain\Api\Exception\ProductNotFoundException',
                 ],
