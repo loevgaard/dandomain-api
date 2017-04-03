@@ -87,11 +87,66 @@ class ProductData extends Endpoint {
     }
 
     /**
-     * @param array $product
+     * @param array|\stdClass $product
      * @return Response
      */
     public function createProduct($product) {
+        if($product instanceof \stdClass) {
+            $product = \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($product), true);
+        }
         $this->assertArray($product, '$product');
+
+        // validate input
+        $this->assertObjectAttribute($product, 'barCodeNumber', 'string', true);
+        $this->assertObjectAttribute($product, 'categoryIdList', 'array', true);
+        $this->assertObjectAttribute($product, 'comments', 'string', true);
+        $this->assertObjectAttribute($product, 'costPrice', 'float', true);
+        $this->assertObjectAttribute($product, 'created', 'string', true);
+        $this->assertObjectAttribute($product, 'createdBy', 'string', true);
+        $this->assertObjectAttribute($product, 'defaultCategoryId', 'string', true);
+        $this->assertObjectAttribute($product, 'disabledVariantIdList', 'array', true);
+        $this->assertObjectAttribute($product, 'disabledVariants', 'array', true);
+        $this->assertObjectAttribute($product, 'edbPriserProductNumber', 'string', true);
+        $this->assertObjectAttribute($product, 'fileSaleLink', 'string', true);
+        $this->assertObjectAttribute($product, 'googleFeedCategory', 'string', true);
+        $this->assertObjectAttribute($product, 'id', 'int', true);
+        $this->assertObjectAttribute($product, 'isGiftCertificate', 'bool', true);
+        $this->assertObjectAttribute($product, 'isModified', 'bool', true);
+        $this->assertObjectAttribute($product, 'isRateVariants', 'bool', true);
+        $this->assertObjectAttribute($product, 'isReviewVariants', 'bool', true);
+        $this->assertObjectAttribute($product, 'isVariantMaster', 'bool', true);
+        $this->assertObjectAttribute($product, 'locationNumber', 'string', true);
+        $this->assertObjectAttribute($product, 'manufacturereIdList', 'array', true);
+        $this->assertObjectAttribute($product, 'manufacturers', 'array', true);
+        $this->assertObjectAttribute($product, 'maxBuyAmount', 'int', true);
+        $this->assertObjectAttribute($product, 'media', 'array', true);
+        $this->assertObjectAttribute($product, 'minBuyAmount', 'int', true);
+        $this->assertObjectAttribute($product, 'minBuyAmountB2B', 'int', true);
+        $this->assertObjectAttribute($product, 'number', 'string', false);
+        $this->assertObjectAttribute($product, 'picture', 'string', true);
+        $this->assertObjectAttribute($product, 'prices', 'array', true);
+        $this->assertObjectAttribute($product, 'productCategories', 'array', true);
+        $this->assertObjectAttribute($product, 'productRelations', 'array', true);
+        $this->assertObjectAttribute($product, 'productType', 'array', true); // @todo we should probably choose either array OR stdClass as input
+        $this->assertObjectAttribute($product, 'salesCount', 'int', true);
+        $this->assertObjectAttribute($product, 'segmentIdList', 'array', true);
+        $this->assertObjectAttribute($product, 'siteSettings', 'array', true);
+        $this->assertObjectAttribute($product, 'sortOrder', 'int', true);
+        $this->assertObjectAttribute($product, 'stockCount', 'int', true);
+        $this->assertObjectAttribute($product, 'stockLimit', 'int', true);
+        $this->assertObjectAttribute($product, 'typeId', 'int', true);
+        $this->assertObjectAttribute($product, 'updated', 'string', true);
+        $this->assertObjectAttribute($product, 'updatedBy', 'string', true);
+        $this->assertObjectAttribute($product, 'variantGroupIdList', 'array', true);
+        $this->assertObjectAttribute($product, 'variantGroups', 'array', true);
+        $this->assertObjectAttribute($product, 'variantIdList', 'array', true);
+        $this->assertObjectAttribute($product, 'variantMasterId', 'string', true);
+        $this->assertObjectAttribute($product, 'variants', 'array', true);
+        $this->assertObjectAttribute($product, 'vendorNumber', 'string', true);
+        $this->assertObjectAttribute($product, 'weight', 'float', true);
+
+
+        // @todo validate contents of arrays
 
         return $this->getMaster()->call(
             'POST',
