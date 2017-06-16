@@ -73,17 +73,37 @@ class ProductData extends Endpoint {
     /**
      * @param \DateTimeInterface $dateStart
      * @param \DateTimeInterface $dateEnd
+     * @param int $page
+     * @param int $pageSize
      * @return Response
      */
-    public function getDataProductsInModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
+    public function getDataProductsInModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, $page = 1, $pageSize = 500) {
         return $this->getMaster()->call(
             'GET',
             sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/GetByModifiedInterval?start=%s&end=%s',
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/GetByModifiedInterval?start=%s&end=%s&pageIndex=%d&pageSize=%d',
+                $dateStart->format('Y-m-d\TH:i:s'),
+                $dateEnd->format('Y-m-d\TH:i:s'),
+                $page,
+                $pageSize
+            )
+        );
+    }
+
+    /**
+     * @param \DateTimeInterface $dateStart
+     * @param \DateTimeInterface $dateEnd
+     * @return int
+     */
+    public function countByModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
+        return (int)((string)$this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/CountByModifiedInterval?start=%s&end=%s',
                 $dateStart->format('Y-m-d\TH:i:s'),
                 $dateEnd->format('Y-m-d\TH:i:s')
             )
-        );
+        )->getBody());
     }
 
     /**
