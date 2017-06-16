@@ -1,6 +1,8 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
+use Assert\Assert;
+
 class ProductTag extends Endpoint {
     /**
      * @return int
@@ -16,7 +18,7 @@ class ProductTag extends Endpoint {
      * @return int
      */
     public function getProductTagPageCount($pageSize) {
-        $this->assertInteger($pageSize, 'pageSize');
+        Assert::that($pageSize)->integer()->greaterOrEqualThan(1);
 
         return (int)((string)$this->getMaster()->call(
             'GET',
@@ -34,8 +36,8 @@ class ProductTag extends Endpoint {
      * @return \stdClass
      */
     public function getProductTagPage($page, $pageSize) {
-        $this->assertInteger($page, 'page');
-        $this->assertInteger($pageSize, 'pageSize');
+        Assert::that($page)->integer()->greaterOrEqualThan(1);
+        Assert::that($pageSize)->integer()->greaterOrEqualThan(1);
 
         return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
             'GET',
@@ -44,11 +46,43 @@ class ProductTag extends Endpoint {
     }
 
     /**
-     * @param $id
+     * @see http://4221117.shop53.dandomain.dk/admin/WEBAPI/Endpoints/v1_0/ProductTagService/help/operations/CreateProductTag
+     *
+     * @param array $tag
+     * @return \stdClass
+     */
+    public function createProductTag($tag) {
+        Assert::that($tag)->isArray();
+
+        return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
+            'POST',
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}'),
+            ['json' => $tag]
+        )->getBody());
+    }
+
+    /**
+     * @see http://4221117.shop53.dandomain.dk/admin/WEBAPI/Endpoints/v1_0/ProductTagService/help/operations/UpdateProductTag
+     *
+     * @param array $tag
+     * @return \stdClass
+     */
+    public function updateProductTag($tag) {
+        Assert::that($tag)->isArray();
+
+        return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
+            'PUT',
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}'),
+            ['json' => $tag]
+        )->getBody());
+    }
+
+    /**
+     * @param int $id
      * @return boolean
      */
     public function deleteProductTag($id) {
-        $this->assertInteger($id, 'id');
+        Assert::that($id)->integer()->greaterOrEqualThan(1);
 
         return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
             'DELETE',
@@ -62,8 +96,8 @@ class ProductTag extends Endpoint {
      * @return bool
      */
     public function assignTagValueToProduct($productNumber, $tagValueId) {
-        $this->assertString($productNumber, 'productNumber');
-        $this->assertInteger($tagValueId, 'id');
+        Assert::that($productNumber)->string();
+        Assert::that($tagValueId)->integer()->greaterOrEqualThan(1);
 
         return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
             'PUT',
