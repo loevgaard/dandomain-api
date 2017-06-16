@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 
 class Api {
     /**
@@ -112,6 +113,11 @@ class Api {
     public $productData;
 
     /**
+     * @var Endpoint\ProductTag;
+     */
+    public $productTag;
+
+    /**
      * @var Endpoint\RelatedData;
      */
     public $relatedData;
@@ -130,18 +136,17 @@ class Api {
         $this->order        = new Endpoint\Order($this);
         $this->product      = new Endpoint\Product($this);
         $this->productData  = new Endpoint\ProductData($this);
+        $this->productTag   = new Endpoint\ProductTag($this);
         $this->relatedData  = new Endpoint\RelatedData($this);
         $this->settings     = new Endpoint\Settings($this);
     }
 
     /**
      * @param string $method
-     * @param string $uri
+     * @param $uri
      * @param array $options
-     * @return Response
-     * @throws GuzzleException
-     * @throws ClientException
-     * @throws ProductNotFoundException
+     * @return ResponseInterface
+     * @throws \Exception
      */
     public function call($method = 'GET', $uri, $options = array()) {
         $defaultOptions = array(
@@ -155,6 +160,7 @@ class Api {
         $url        = $this->getHost() . str_replace('{KEY}', $this->getApiKey(), $uri);
         try {
             $response = $this->client->request($method, $url, $options);
+            $this->response = $response;
         } catch (GuzzleException $e) {
             $newException = $this->parseException($e);
             if($newException) {
