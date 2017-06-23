@@ -55,9 +55,9 @@ abstract class Endpoint {
         }
 
         if(is_object($obj)) {
-            $val = isset($obj->{$attr}) ?: null;
+            $val = isset($obj->{$attr}) ? $obj->{$attr} : null;
         } else {
-            $val = isset($obj[$attr]) ?: null;
+            $val = isset($obj[$attr]) ? $obj[$attr] : null;
         }
 
         if($optional && is_null($val)) {
