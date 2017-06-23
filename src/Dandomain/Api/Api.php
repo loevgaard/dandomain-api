@@ -154,6 +154,7 @@ class Api {
             'headers' => array(
                 'Accept' => 'application/json',
             ),
+            'verify' => false,
         );
 
         $options    = array_merge($defaultOptions, $options);
