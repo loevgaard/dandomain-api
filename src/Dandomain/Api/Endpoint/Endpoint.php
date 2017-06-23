@@ -1,6 +1,7 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
+use Assert\Assert;
 use Dandomain\Api\Api;
 
 abstract class Endpoint {
@@ -53,7 +54,6 @@ abstract class Endpoint {
             throw new \InvalidArgumentException('$type is not valid');
         }
 
-        $val = null;
         if(is_object($obj)) {
             $val = isset($obj->{$attr}) ?: null;
         } else {
@@ -67,7 +67,7 @@ abstract class Endpoint {
         $res = call_user_func($func, $val);
 
         if(!$res) {
-            throw new \InvalidArgumentException('Attribute '.$attr.' on object must be a(n) '.$type);
+            throw new \InvalidArgumentException('Attribute '.$attr.' on object must be a(n) '.$type.'. Value was: ('.gettype($val).') '.json_encode($val));
         }
     }
 

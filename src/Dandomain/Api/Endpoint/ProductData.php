@@ -1,6 +1,7 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
+use Assert\Assert;
 use GuzzleHttp\Psr7\Response;
 use Prewk\XmlStringStreamer;
 use Prewk\XmlStringStreamer\Stream;
@@ -114,7 +115,7 @@ class ProductData extends Endpoint {
         if($product instanceof \stdClass) {
             $product = \GuzzleHttp\json_decode(\GuzzleHttp\json_encode($product), true);
         }
-        $this->assertArray($product, '$product');
+        Assert::that($product)->isArray();
 
         // validate input
         $this->assertObjectAttribute($product, 'barCodeNumber', 'string', true);
