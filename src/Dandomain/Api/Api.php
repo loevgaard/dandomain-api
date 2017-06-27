@@ -11,6 +11,15 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @property Endpoint\Customer $customer
+ * @property Endpoint\Order $order
+ * @property Endpoint\Product $product
+ * @property Endpoint\ProductData $productData
+ * @property Endpoint\ProductTag $productTag
+ * @property Endpoint\RelatedData $relatedData
+ * @property Endpoint\Settings $settings
+ */
 class Api {
     /**
      * Example: http://www.example.com
@@ -34,51 +43,6 @@ class Api {
     protected $client;
 
     /**
-     * @var string
-     */
-    protected $query;
-
-    /**
-     * @var bool
-     */
-    protected $debug = false;
-
-    /**
-     * Can be 'xml' or 'json'
-     *
-     * @var string
-     */
-    protected $contentType = 'json';
-
-    /**
-     * The HTTP method used for cURL
-     *
-     * @var string
-     */
-    protected $httpMethod = 'GET';
-
-    /**
-     * Whether the result should be saved in a file
-     *
-     * @var bool
-     */
-    protected $saveResult = false;
-
-    /**
-     * The directory to store any saved results
-     *
-     * @var string
-     */
-    protected $directory;
-
-    /**
-     * The file to save any results to
-     *
-     * @var string
-     */
-    protected $file;
-
-    /**
      * @var Request
      */
     protected $request;
@@ -89,92 +53,98 @@ class Api {
     protected $response;
 
     /**
+     * @var array
+     */
+    protected $requestOptions;
+
+    /**
+     * @var array
+     */
+    protected $defaultRequestOptions;
+
+    /**
      * These are endpoints in the Dandomain API
      */
-
     /**
      * @var Endpoint\Customer
      */
-    public $customer;
+    protected $customer;
 
     /**
      * @var Endpoint\Order;
      */
-    public $order;
+    protected $order;
 
     /**
      * @var Endpoint\Product;
      */
-    public $product;
+    protected $product;
 
     /**
      * @var Endpoint\ProductData;
      */
-    public $productData;
+    protected $productData;
 
     /**
      * @var Endpoint\ProductTag;
      */
-    public $productTag;
+    protected $productTag;
 
     /**
      * @var Endpoint\RelatedData;
      */
-    public $relatedData;
+    protected $relatedData;
 
     /**
      * @var Endpoint\Settings;
      */
-    public $settings;
+    protected $settings;
 
-    public function __construct($host, $apiKey, ClientInterface $client) {
-        $this->setHost($host);
-        $this->setApiKey($apiKey);
-        $this->client = $client;
-
-        $this->customer     = new Endpoint\Customer($this);
-        $this->order        = new Endpoint\Order($this);
-        $this->product      = new Endpoint\Product($this);
-        $this->productData  = new Endpoint\ProductData($this);
-        $this->productTag   = new Endpoint\ProductTag($this);
-        $this->relatedData  = new Endpoint\RelatedData($this);
-        $this->settings     = new Endpoint\Settings($this);
+    public function __construct($host, $apiKey) {
+        $host = rtrim($host, '/');
+        if(!filter_var($host, FILTER_VALIDATE_URL)) {
+            throw new \InvalidArgumentException("'$host' is not a valid URL");
+        }
+        $this->host = $host;
+        $this->apiKey = $apiKey;
+        $this->requestOptions = [];
+        $this->defaultRequestOptions = [
+            'headers' => [
+                'Accept' => 'application/json',
+            ],
+            'verify' => false,
+        ];
     }
 
     /**
      * @param string $method
-     * @param $uri
-     * @param array $options
+     * @param string $uri
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function call($method = 'GET', $uri, $options = array()) {
-        $defaultOptions = array(
-            'debug' => $this->debug,
-            'headers' => array(
-                'Accept' => 'application/json',
-            ),
-            'verify' => false,
-        );
-
-        $options    = array_merge($defaultOptions, $options);
-        $url        = $this->getHost() . str_replace('{KEY}', $this->getApiKey(), $uri);
+    public function call($method, $uri) : ResponseInterface
+    {
         try {
-            $response = $this->client->request($method, $url, $options);
-            $this->response = $response;
+            $options = array_merge($this->defaultRequestOptions, $this->requestOptions);
+            $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
+
+            $this->response = $this->client->request($method, $url, $options);
+
+            // reset request options
+            $this->requestOptions = [];
+
+            return $this->response;
         } catch (GuzzleException $e) {
-            $newException = $this->parseException($e);
-            if($newException) {
-                throw $newException;
-            }
-
-            throw $e;
+            throw $this->parseException($e);
         }
-
-        return $response;
     }
 
-    protected function parseException(GuzzleException $e) {
+    /**
+     * @param GuzzleException $e
+     * @return \Exception
+     */
+    protected function parseException(GuzzleException $e) : \Exception
+    {
         $exceptionMapping = [
             'client' => [
                 [
@@ -199,250 +169,68 @@ class Api {
                 }
             }
         }
-        return false;
+        return $e;
     }
 
-    protected function getAcceptHeader() {
-        if(stripos($this->contentType, 'json') !== false) {
-            return 'application/json';
-        } elseif(stripos($this->contentType, 'text') !== false){
-            return 'text/plain';
+    /**
+     * This ensures lazy loading of the endpoint classes
+     *
+     * @param string $name
+     * @return null
+     */
+    public function __get($name)
+    {
+        $className = 'Endpoint\\'.ucfirst($name);
+        if(property_exists('Api', $name) && class_exists($className)) {
+            $this->{$name} = new $className($this);
+            return $this->{$name};
         } else {
-            return 'application/xml';
+            $trace = debug_backtrace();
+            trigger_error(
+                'Undefined property via __get(): ' . $name .
+                ' in ' . $trace[0]['file'] .
+                ' on line ' . $trace[0]['line'],
+                E_USER_NOTICE);
+            return null;
         }
     }
 
-    protected function getSavePath() {
-        if(is_null($this->directory)) {
-            throw new \RuntimeException('No directory set.');
-        }
-        if(is_null($this->file)) {
-            $this->file = 'DandomainApiResult' . date('YmdHis') . '-' . uniqid() . '.txt'; // using uniqid to avoid collissions
-        }
-
-        return $this->directory . DIRECTORY_SEPARATOR . $this->file;
-    }
-
     /**
-     * @return string
+     * @return ClientInterface
      */
-    public function getApiKey()
+    public function getClient() : ClientInterface
     {
-        return $this->apiKey;
-    }
-
-    /**
-     * @param string $apiKey
-     * @return Api
-     */
-    public function setApiKey($apiKey)
-    {
-        $this->apiKey = $apiKey;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContentType()
-    {
-        return $this->contentType;
-    }
-
-    /**
-     * @param string $contentType
-     * @return Api
-     */
-    public function setContentType($contentType)
-    {
-        $contentType = strtolower($contentType);
-
-        if(!in_array($contentType, array('json', 'xml', 'text'))) {
-            throw new \InvalidArgumentException('$contentType' . " can only be 'json', 'xml' or 'text'");
+        if(!$this->client) {
+            $this->client = new Client();
         }
 
-        $this->contentType = $contentType;
-        return $this;
+        return $this->client;
     }
 
     /**
-     * @return boolean
-     */
-    public function isDebug()
-    {
-        return $this->debug;
-    }
-
-    /**
-     * @param boolean $debug
      * @return Api
      */
-    public function setDebug($debug)
+    public function setClient(ClientInterface $client) : Api
     {
-        $this->debug = $debug;
+        $this->client = $client;
         return $this;
     }
 
     /**
-     * @return string
+     * @return ResponseInterface
      */
-    public function getHost()
+    public function getResponse() : ResponseInterface
     {
-        return $this->host;
-    }
-
-    /**
-     * @param string $host
-     * @return Api
-     */
-    public function setHost($host)
-    {
-        $host = rtrim($host, '/');
-        if(!filter_var($host, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException("'$host' is not a valid URL");
-        }
-        $this->host = $host;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getQuery()
-    {
-        return $this->query;
-    }
-
-    /**
-     * @param string $query
-     * @return Api
-     */
-    public function setQuery($query)
-    {
-        $this->query = $query;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDirectory()
-    {
-        return $this->directory;
-    }
-
-    /**
-     * @param string $directory
-     * @return Api
-     */
-    public function setDirectory($directory)
-    {
-        $directory = rtrim($directory, '/\\');
-        if(!is_dir($directory)) {
-            throw new \InvalidArgumentException('$directory is not a valid directory');
-        }
-        $this->directory = $directory;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * @param string $file
-     * @return Api
-     */
-    public function setFile($file)
-    {
-        $this->file = $file;
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isSaveResult()
-    {
-        return $this->saveResult;
-    }
-
-    /**
-     * @param boolean $saveResult
-     * @return Api
-     */
-    public function setSaveResult($saveResult)
-    {
-        $this->saveResult = $saveResult;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHttpMethod()
-    {
-        return $this->httpMethod;
-    }
-
-    /**
-     * @param string $httpMethod
-     * @return Api
-     */
-    public function setHttpMethod($httpMethod)
-    {
-        if(!in_array($httpMethod, array('GET', 'POST', 'DELETE', 'PUT'))) {
-            throw new \InvalidArgumentException('$httpMethod not valid.');
-        }
-        $this->httpMethod = $httpMethod;
-        return $this;
-    }
-
-    /**
-     * @return Request
-     */
-    public function getRequest()
-    {
-        if(is_null($this->request)) {
-            $this->request = new Request(Request::METHOD_GET, '/', $this->getHost());
-        }
-        return $this->request;
-    }
-
-    /**
-     * @param Request $request
-     * @return Api
-     */
-    public function setRequest($request)
-    {
-        $this->request = $request;
-        return $this;
-    }
-
-    /**
-     * @return Response
-     */
-    public function getResponse()
-    {
-        if(is_null($this->response)) {
-            $this->response = new Response();
-        }
         return $this->response;
     }
 
     /**
-     * @param Response $response
+     * @param array $requestOptions
      * @return Api
      */
-    public function setResponse($response)
+    public function setRequestOptions(array $requestOptions)
     {
-        $this->response = $response;
+        $this->requestOptions = $requestOptions;
         return $this;
     }
-
-
 }
