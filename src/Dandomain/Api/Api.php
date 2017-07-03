@@ -180,8 +180,8 @@ class Api {
      */
     public function __get($name)
     {
-        $className = 'Endpoint\\'.ucfirst($name);
-        if(property_exists('Api', $name) && class_exists($className)) {
+        $className = 'Dandomain\\Api\\Endpoint\\'.ucfirst($name);
+        if(property_exists(static::class, $name)) {
             $this->{$name} = new $className($this);
             return $this->{$name};
         } else {
@@ -208,6 +208,7 @@ class Api {
     }
 
     /**
+     * @param ClientInterface $client
      * @return Api
      */
     public function setClient(ClientInterface $client) : Api
