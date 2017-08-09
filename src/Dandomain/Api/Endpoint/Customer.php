@@ -1,49 +1,57 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
-use GuzzleHttp\Psr7\Response;
+use Assert\Assert;
+use Psr\Http\Message\ResponseInterface;
 
 class Customer extends Endpoint {
     /**
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#GetCustomer_GET
+     *
      * @param int $customerId
-     * @return Response
+     * @return \stdClass
      */
-    public function getCustomer($customerId) {
-        $this->assertInteger($customerId, '$customerId');
+    public function getCustomer(int $customerId) : \stdClass
+    {
+        Assert::that($customerId)->greaterThan(0);
 
-        return $this->getMaster()->call(
+        return $this->master->decodeResponse($this->master->call(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
                 $customerId
             )
-        );
+        ));
     }
 
     /**
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#GetCustomerByEmail_GET
+     *
      * @param string $email
-     * @return Response
+     * @return \stdClass
      */
-    public function getCustomerByEmail($email) {
-        $this->assertString($email, '$email');
+    public function getCustomerByEmail(string $email) : \stdClass
+    {
+        Assert::that($email)->email();
 
-        return $this->getMaster()->call(
+        return $this->master->decodeResponse($this->master->call(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerByEmail?email=%s',
                 rawurlencode($email)
             )
-        );
+        ));
     }
 
     /**
-     * @param array $customer
-     * @return Response
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#CreateCustomer_POST
+     *
+     * @param array|\stdClass $customer
+     * @return ResponseInterface
      */
-    public function createCustomer($customer) {
-        $this->assertArray($customer, '$customer');
-
-        return $this->getMaster()->call(
+    public function createCustomer($customer) : ResponseInterface
+    {
+        return $this->master->call(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}',
             ['json' => $customer]
@@ -51,15 +59,17 @@ class Customer extends Endpoint {
     }
 
     /**
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#UpdateCustomer_PUT
+     *
      * @param int $customerId
-     * @param array $customer
-     * @return Response
+     * @param array|\stdClass $customer
+     * @return ResponseInterface
      */
-    public function updateCustomer($customerId, $customer) {
-        $this->assertInteger($customerId, '$customerId');
-        $this->assertArray($customer, '$customer');
+    public function updateCustomer(int $customerId, $customer) : ResponseInterface
+    {
+        Assert::that($customerId)->greaterThan(0);
 
-        return $this->getMaster()->call(
+        return $this->master->call(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
@@ -70,41 +80,48 @@ class Customer extends Endpoint {
     }
 
     /**
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#DeleteCustomer_DELETE
+     *
      * @param int $customerId
-     * @return Response
+     * @return ResponseInterface
      */
-    public function deleteCustomer($customerId) {
-        $this->assertInteger($customerId, '$customerId');
+    public function deleteCustomer(int $customerId) : ResponseInterface
+    {
+        Assert::that($customerId)->greaterThan(0);
 
-        return $this->getMaster()->call(
+        return $this->master->decodeResponse($this->master->call(
             'DELETE',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
                 $customerId
             )
-        );
+        ));
     }
 
     /**
-     * @return Response
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#GetCustomerGroups_GET
+     *
+     * @return array
      */
-    public function getCustomerGroups() {
-        return $this->getMaster()->call(
+    public function getCustomerGroups() : array
+    {
+        return $this->master->decodeResponse($this->master->call(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/CustomerGroup'
-        );
+        ));
     }
 
     /**
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#UpdateCustomerDiscountPOST
+     *
      * @param int $customerId
-     * @param array $customerDiscount
-     * @return Response
+     * @param array|\stdClass $customerDiscount
+     * @return ResponseInterface
      */
-    public function updateCustomerDiscount($customerId, $customerDiscount) {
-        $this->assertInteger($customerId, '$customerId');
-        $this->assertArray($customerDiscount, '$customerDiscount');
+    public function updateCustomerDiscount(int $customerId, $customerDiscount) {
+        Assert::that($customerId)->greaterThan(0);
 
-        return $this->getMaster()->call(
+        return $this->master->call(
             'POST',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/UpdateCustomerDiscount/%d',
@@ -115,18 +132,21 @@ class Customer extends Endpoint {
     }
 
     /**
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#GetCustomerDiscountGET
+     *
      * @param int $customerId
-     * @return Response
+     * @return \stdClass
      */
-    public function getCustomerDiscount($customerId) {
-        $this->assertInteger($customerId, '$customerId');
+    public function getCustomerDiscount(int $customerId) : \stdClass
+    {
+        Assert::that($customerId)->greaterThan(0);
 
-        return $this->getMaster()->call(
+        return $this->master->decodeResponse($this->master->call(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerDiscount/%d',
                 $customerId
             )
-        );
+        ));
     }
 }

@@ -119,13 +119,14 @@ class Api {
     /**
      * @param string $method
      * @param string $uri
+     * @param array $options
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function call($method, $uri) : ResponseInterface
+    public function call(string $method, string $uri, array $options) : ResponseInterface
     {
         try {
-            $options = array_merge($this->defaultRequestOptions, $this->requestOptions);
+            $options = array_merge($this->defaultRequestOptions, $this->requestOptions, $options);
             $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
 
             $this->response = $this->client->request($method, $url, $options);
@@ -160,7 +161,7 @@ class Api {
             ]
         ];
         if($e instanceof ClientException) {
-            /** @var ClientException $item */
+            /** @var ClientException $e */
             foreach ($exceptionMapping['client'] as $item) {
                 if($e->getResponse()->getStatusCode() == $item['statusCode'] && preg_match($item['match'], $e->getResponse()->getBody()->getContents())) {
                     /** @var ClientException $newE */
@@ -193,6 +194,14 @@ class Api {
                 E_USER_NOTICE);
             return null;
         }
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return mixed
+     */
+    public function decodeResponse(ResponseInterface $response) {
+        return \GuzzleHttp\json_decode((string)$response->getBody());
     }
 
     /**

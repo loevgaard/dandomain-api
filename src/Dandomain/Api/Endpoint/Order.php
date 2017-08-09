@@ -3,9 +3,10 @@ namespace Dandomain\Api\Endpoint;
 
 use GuzzleHttp\Psr7\Response;
 
-class Order extends Endpoint {
+class Order extends Endpoint
+{
     public function createOrder($obj) {
-        return $this->getMaster()->call(
+        return $this->master->call(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}',
             ['json' => $obj]
