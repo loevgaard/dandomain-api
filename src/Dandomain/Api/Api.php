@@ -126,6 +126,8 @@ class Api {
     public function call(string $method, string $uri, array $options) : ResponseInterface
     {
         try {
+            // @todo instead of catching exception, set http errors to false
+            // and return an error object according to http://jsonapi.org/format/#errors
             $options = array_merge($this->defaultRequestOptions, $this->requestOptions, $options);
             $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
 
