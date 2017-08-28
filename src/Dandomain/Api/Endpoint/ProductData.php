@@ -16,7 +16,7 @@ class ProductData extends Endpoint {
     public function getDataProduct($productNumber) {
         $this->assertString($productNumber, '$productNumber');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s',
@@ -32,7 +32,7 @@ class ProductData extends Endpoint {
     public function getDataProductsInCategory($categoryId) {
         $this->assertInteger($categoryId, '$categoryId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/Products/{KEY}/%d',
@@ -48,7 +48,7 @@ class ProductData extends Endpoint {
     public function getDataProductsByBarcode($barCode) {
         $this->assertString($barCode, '$barCode');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByBarcode/%s',
@@ -62,7 +62,7 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataProductsByModificationDate(\DateTimeInterface $date) {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ByModificationDate/%s',
@@ -79,7 +79,7 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataProductsInModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, $page = 1, $pageSize = 500) {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/GetByModifiedInterval?start=%s&end=%s&pageIndex=%d&pageSize=%d',
@@ -97,7 +97,7 @@ class ProductData extends Endpoint {
      * @return int
      */
     public function countByModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
-        return (int)((string)$this->getMaster()->call(
+        return (int)((string)$this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/CountByModifiedInterval?start=%s&end=%s',
@@ -169,7 +169,7 @@ class ProductData extends Endpoint {
 
         // @todo validate contents of arrays
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}',
             ['json' => $product]
@@ -185,7 +185,7 @@ class ProductData extends Endpoint {
         $this->assertString($productNumber, '$productNumber');
         $this->assertInteger($stockCount, '$stockCount');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/SetStockCount/%s/%d',
@@ -257,7 +257,7 @@ class ProductData extends Endpoint {
      * @return Response
      */
     public function getDataCategories() {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories'
         );
@@ -270,7 +270,7 @@ class ProductData extends Endpoint {
     public function getDataSubCategories($categoryId) {
         $this->assertInteger($categoryId, '$categoryId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Categories/%d',
@@ -280,7 +280,7 @@ class ProductData extends Endpoint {
     }
 
     public function getProductCount() {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductCount'
         );
@@ -295,7 +295,7 @@ class ProductData extends Endpoint {
         $this->assertInteger($page, '$page');
         $this->assertInteger($pageSize, '$pageSize');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPage/%d/%d',
@@ -315,7 +315,7 @@ class ProductData extends Endpoint {
     public function getProductPageCount($pageSize) {
         $this->assertInteger($pageSize, '$pageSize');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/ProductPageCount/%d',
@@ -331,7 +331,7 @@ class ProductData extends Endpoint {
     public function deleteProduct($productNumber) {
         $this->assertString($productNumber, '$productNumber');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'DELETE',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s',
@@ -347,7 +347,7 @@ class ProductData extends Endpoint {
     public function createCategory($category) {
         $this->assertArray($category, '$category');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category',
             ['json' => $category]
@@ -361,7 +361,7 @@ class ProductData extends Endpoint {
     public function deleteCategory($categoryId) {
         $this->assertInteger($categoryId, '$categoryId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'DELETE',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category/%d',
@@ -377,7 +377,7 @@ class ProductData extends Endpoint {
     public function getDataCategory($categoryId) {
         $this->assertInteger($categoryId, '$categoryId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category/%d',
@@ -395,7 +395,7 @@ class ProductData extends Endpoint {
         $this->assertString($productNumber, '$productNumber');
         $this->assertArray($product, '$product');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s',
@@ -414,7 +414,7 @@ class ProductData extends Endpoint {
         $this->assertString($productNumber, '$productNumber');
         $this->assertArray($product, '$product');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'PATCH',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s',
@@ -433,7 +433,7 @@ class ProductData extends Endpoint {
         $this->assertString($productNumber, '$productNumber');
         $this->assertArray($price, '$price');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'POST',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices',
@@ -452,7 +452,7 @@ class ProductData extends Endpoint {
         $this->assertString($productNumber, '$productNumber');
         $this->assertArray($price, '$price');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'DELETE',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices',
@@ -469,7 +469,7 @@ class ProductData extends Endpoint {
     public function getPricesForProduct($productNumber) {
         $this->assertString($productNumber, '$productNumber');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices/List',
@@ -489,7 +489,7 @@ class ProductData extends Endpoint {
         $this->assertString($productNumber, '$productNumber');
         $this->assertArray($settings, '$settings');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'PATCH',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%d/Products/%s/Settings',

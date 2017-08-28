@@ -1,7 +1,6 @@
 <?php
 namespace Dandomain\Api\Endpoint;
 
-use Assert\Assert;
 use Dandomain\Api\Api;
 
 abstract class Endpoint {

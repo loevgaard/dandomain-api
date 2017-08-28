@@ -8,7 +8,7 @@ class Settings extends Endpoint {
      * @return Response
      */
     public function getSites() {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Sites'
         );
@@ -18,7 +18,7 @@ class Settings extends Endpoint {
      * @return Response
      */
     public function getCountries() {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Countries'
         );
@@ -28,7 +28,7 @@ class Settings extends Endpoint {
      * @return Response
      */
     public function getCurrencies() {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Currencies'
         );
@@ -41,7 +41,7 @@ class Settings extends Endpoint {
     public function getPaymentMethods($siteId) {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/PaymentMethods/%d', $siteId)
         );
@@ -54,7 +54,7 @@ class Settings extends Endpoint {
     public function getShippingMethods($siteId) {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/ShippingMethods/%d', $siteId)
         );
@@ -67,7 +67,7 @@ class Settings extends Endpoint {
     public function getCompanyInfo($siteId) {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/CompanyInfo/%d', $siteId)
         );

@@ -6,7 +6,7 @@ use GuzzleHttp\Psr7\Response;
 class Order extends Endpoint
 {
     public function createOrder($obj) {
-        return $this->master->call(
+        return $this->master->request(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}',
             ['json' => $obj]
@@ -19,7 +19,7 @@ class Order extends Endpoint
      * @return Response
      */
     public function getOrders(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByDateInterval?start=%s&end=%s',
@@ -36,7 +36,7 @@ class Order extends Endpoint
     public function getOrder($orderId) {
         $this->assertInteger($orderId, '$orderId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/%d',
@@ -54,7 +54,7 @@ class Order extends Endpoint
     public function deleteOrder($orderId) {
         $this->assertInteger($orderId, '$orderId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'DELETE',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/%d',
@@ -70,7 +70,7 @@ class Order extends Endpoint
     public function completeOrder($orderId) {
         $this->assertInteger($orderId, '$orderId');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/CompleteOrder/%d',
@@ -86,7 +86,7 @@ class Order extends Endpoint
     public function getOrdersByCustomerNumber($customerNumber) {
         $this->assertInteger($customerNumber, '$customerNumber');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByCustomerNumber/%d',
@@ -101,7 +101,7 @@ class Order extends Endpoint
      * @return Response
      */
     public function getOrdersInModifiedInterval (\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByModifiedInterval?start=%s&end=%s',
@@ -115,7 +115,7 @@ class Order extends Endpoint
      * @return Response
      */
     public function getOrderStates () {
-        return $this->getMaster()->call(
+        return $this->master->request(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/OrderStates'
         );
@@ -130,7 +130,7 @@ class Order extends Endpoint
         $this->assertInteger($orderId, '$orderId');
         $this->assertString($comment, '$comment');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/SetOrderComment/%d?comment=%s',
@@ -149,7 +149,7 @@ class Order extends Endpoint
         $this->assertInteger($orderId, '$orderId');
         $this->assertInteger($orderState, '$orderState');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/SetOrderState/%d/%d',
@@ -168,7 +168,7 @@ class Order extends Endpoint
         $this->assertInteger($orderId, '$orderId');
         $this->assertString($trackingNumber, '$trackingNumber');
 
-        return $this->getMaster()->call(
+        return $this->master->request(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/SetTrackNumber/%d?tracknumber=%s',

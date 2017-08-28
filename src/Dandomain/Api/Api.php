@@ -1,8 +1,8 @@
 <?php
 namespace Dandomain\Api;
 
+use Assert\Assert;
 use Dandomain\Api\Endpoint;
-use Dandomain\Api\Exception\ProductNotFoundException;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
@@ -48,6 +48,8 @@ class Api {
     protected $request;
 
     /**
+     * This is the last response
+     *
      * @var Response
      */
     protected $response;
@@ -100,11 +102,11 @@ class Api {
      */
     protected $settings;
 
-    public function __construct($host, $apiKey) {
+    public function __construct(string $host, string $apiKey) {
         $host = rtrim($host, '/');
-        if(!filter_var($host, FILTER_VALIDATE_URL)) {
-            throw new \InvalidArgumentException("'$host' is not a valid URL");
-        }
+
+        Assert::that($host)->url('`$host` is not a valid URL');
+
         $this->host = $host;
         $this->apiKey = $apiKey;
         $this->requestOptions = [];
@@ -123,12 +125,18 @@ class Api {
      * @return ResponseInterface
      * @throws \Exception
      */
-    public function call(string $method, string $uri, array $options) : ResponseInterface
+    public function request(string $method, string $uri, array $options = []) : ResponseInterface
     {
         try {
             // @todo instead of catching exception, set http errors to false
             // and return an error object according to http://jsonapi.org/format/#errors
-            $options = array_merge($this->defaultRequestOptions, $this->requestOptions, $options);
+
+            // merge all options
+            // the priority is
+            // 1. options supplied by the user
+            // 2. options supplied by the method calling
+            // 3. the default options
+            $options = array_merge($this->defaultRequestOptions, $options, $this->requestOptions);
             $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
 
             $this->response = $this->client->request($method, $url, $options);
@@ -185,7 +193,9 @@ class Api {
     {
         $className = 'Dandomain\\Api\\Endpoint\\'.ucfirst($name);
         if(property_exists(static::class, $name)) {
-            $this->{$name} = new $className($this);
+            if(!$this->{$name}) {
+                $this->{$name} = new $className($this);
+            }
             return $this->{$name};
         } else {
             $trace = debug_backtrace();
@@ -202,7 +212,7 @@ class Api {
      * @param ResponseInterface $response
      * @return mixed
      */
-    public function decodeResponse(ResponseInterface $response) {
+    public static function decodeResponse(ResponseInterface $response) {
         return \GuzzleHttp\json_decode((string)$response->getBody());
     }
 
@@ -229,6 +239,8 @@ class Api {
     }
 
     /**
+     * Returns the latest response
+     *
      * @return ResponseInterface
      */
     public function getResponse() : ResponseInterface
@@ -237,12 +249,26 @@ class Api {
     }
 
     /**
+     * Sets request options for the next request
+     *
      * @param array $requestOptions
      * @return Api
      */
-    public function setRequestOptions(array $requestOptions)
+    public function setRequestOptions(array $requestOptions) : Api
     {
         $this->requestOptions = $requestOptions;
+        return $this;
+    }
+
+    /**
+     * Sets default request options
+     *
+     * @param array $defaultRequestOptions
+     * @return Api
+     */
+    public function setDefaultRequestOptions(array $defaultRequestOptions) : Api
+    {
+        $this->defaultRequestOptions = $defaultRequestOptions;
         return $this;
     }
 }

@@ -8,7 +8,7 @@ class ProductTag extends Endpoint {
      * @return int
      */
     public function getProductTagCount() {
-        return (int)((string)$this->getMaster()->call(
+        return (int)((string)$this->master->request(
             'GET','/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}/ProductTagCount'
         )->getBody());
     }
@@ -20,7 +20,7 @@ class ProductTag extends Endpoint {
     public function getProductTagPageCount($pageSize) {
         Assert::that($pageSize)->integer()->greaterOrEqualThan(1);
 
-        return (int)((string)$this->getMaster()->call(
+        return (int)((string)$this->master->request(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}/ProductTagPageCount/%d', $pageSize)
         )->getBody());
@@ -39,7 +39,7 @@ class ProductTag extends Endpoint {
         Assert::that($page)->integer()->greaterOrEqualThan(1);
         Assert::that($pageSize)->integer()->greaterOrEqualThan(1);
 
-        return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
+        return \GuzzleHttp\json_decode((string)$this->master->request(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}/ProductTagPage/%d/%d', $page, $pageSize)
         )->getBody());
@@ -54,7 +54,7 @@ class ProductTag extends Endpoint {
     public function createProductTag($tag) {
         Assert::that($tag)->isArray();
 
-        return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
+        return \GuzzleHttp\json_decode((string)$this->master->request(
             'POST',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}'),
             ['json' => $tag]
@@ -70,7 +70,7 @@ class ProductTag extends Endpoint {
     public function updateProductTag($tag) {
         Assert::that($tag)->isArray();
 
-        return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
+        return \GuzzleHttp\json_decode((string)$this->master->request(
             'PUT',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}'),
             ['json' => $tag]
@@ -84,7 +84,7 @@ class ProductTag extends Endpoint {
     public function deleteProductTag($id) {
         Assert::that($id)->integer()->greaterOrEqualThan(1);
 
-        return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
+        return \GuzzleHttp\json_decode((string)$this->master->request(
             'DELETE',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}/%d', $id)
         )->getBody()) === true;
@@ -99,7 +99,7 @@ class ProductTag extends Endpoint {
         Assert::that($productNumber)->string();
         Assert::that($tagValueId)->integer()->greaterOrEqualThan(1);
 
-        return \GuzzleHttp\json_decode((string)$this->getMaster()->call(
+        return \GuzzleHttp\json_decode((string)$this->master->request(
             'PUT',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}/AssignTagValueToProduct/%s/%d', rawurlencode($productNumber), $tagValueId)
         )->getBody()) === true;
