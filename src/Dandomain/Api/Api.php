@@ -98,6 +98,11 @@ class Api {
     public $customer;
 
     /**
+     * @var Endpoint\Discount;
+     */
+    public $discount;
+
+    /**
      * @var Endpoint\Order;
      */
     public $order;
@@ -133,6 +138,7 @@ class Api {
         $this->client = $client;
 
         $this->customer     = new Endpoint\Customer($this);
+        $this->discount     = new Endpoint\Discount($this);
         $this->order        = new Endpoint\Order($this);
         $this->product      = new Endpoint\Product($this);
         $this->productData  = new Endpoint\ProductData($this);
