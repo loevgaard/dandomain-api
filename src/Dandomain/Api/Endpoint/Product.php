@@ -30,11 +30,6 @@ class Product extends Endpoint {
         ));
     }
 
-    public function getProducts() {
-        // @todo implement
-        throw new \RuntimeException('Should be implemented');
-    }
-
     /**
      * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/ProductService/help/operations/GetProductsInCategory
      *
