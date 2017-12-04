@@ -97,15 +97,33 @@ class Order extends Endpoint {
     /**
      * @param \DateTimeInterface $dateStart
      * @param \DateTimeInterface $dateEnd
+     * @return int
+     */
+    public function countByModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
+        return (int)((string)$this->getMaster()->call(
+            'GET',
+            sprintf(
+                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/CountByModifiedInterval?start=%s&end=%s',
+                $dateStart->format('Y-m-d\TH:i:s'),
+                $dateEnd->format('Y-m-d\TH:i:s')
+            )
+        )->getBody());
+    }
+
+    /**
+     * @param \DateTimeInterface $dateStart
+     * @param \DateTimeInterface $dateEnd
      * @return Response
      */
-    public function getOrdersInModifiedInterval (\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) {
+    public function getOrdersInModifiedInterval (\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, $page = 1, $pageSize = 100) {
         return $this->getMaster()->call(
             'GET',
             sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByModifiedInterval?start=%s&end=%s',
+                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByModifiedInterval?start=%s&end=%s&pageIndex=%d&pageSize=%d',
                 $dateStart->format('Y-m-d\TH:i:s'),
-                $dateEnd->format('Y-m-d\TH:i:s')
+                $dateEnd->format('Y-m-d\TH:i:s'),
+                $page,
+                $pageSize
             )
         );
     }
