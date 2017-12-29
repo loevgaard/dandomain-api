@@ -161,6 +161,8 @@ class Api {
                 'Accept' => 'application/json',
             ),
             'verify' => false,
+            'connect_timeout' => 60,
+            'timeout' => 600,
         );
 
         $options    = array_merge($defaultOptions, $options);
