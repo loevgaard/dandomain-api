@@ -1,14 +1,16 @@
 <?php
-namespace Dandomain\Api\Endpoint;
+namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use GuzzleHttp\Psr7\Response;
 
-class Settings extends Endpoint {
+class Settings extends Endpoint
+{
     /**
      * @return Response
      */
-    public function getSites() {
-        return $this->master->request(
+    public function getSites()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Sites'
         );
@@ -17,8 +19,9 @@ class Settings extends Endpoint {
     /**
      * @return Response
      */
-    public function getCountries() {
-        return $this->master->request(
+    public function getCountries()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Countries'
         );
@@ -27,8 +30,9 @@ class Settings extends Endpoint {
     /**
      * @return Response
      */
-    public function getCurrencies() {
-        return $this->master->request(
+    public function getCurrencies()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Currencies'
         );
@@ -38,10 +42,11 @@ class Settings extends Endpoint {
      * @param int $siteId
      * @return Response
      */
-    public function getPaymentMethods($siteId) {
+    public function getPaymentMethods($siteId)
+    {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/PaymentMethods/%d', $siteId)
         );
@@ -51,10 +56,11 @@ class Settings extends Endpoint {
      * @param int $siteId
      * @return Response
      */
-    public function getShippingMethods($siteId) {
+    public function getShippingMethods($siteId)
+    {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/ShippingMethods/%d', $siteId)
         );
@@ -64,10 +70,11 @@ class Settings extends Endpoint {
      * @param int $siteId
      * @return Response
      */
-    public function getCompanyInfo($siteId) {
+    public function getCompanyInfo($siteId)
+    {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/CompanyInfo/%d', $siteId)
         );

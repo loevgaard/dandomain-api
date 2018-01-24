@@ -1,14 +1,16 @@
 <?php
-namespace Dandomain\Api\Endpoint;
+namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use GuzzleHttp\Psr7\Response;
 
-class RelatedData extends Endpoint {
+class RelatedData extends Endpoint
+{
     /**
      * @return Response
      */
-    public function getManufacturers() {
-        return $this->master->request(
+    public function getManufacturers()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Manufacturers'
         );
@@ -17,8 +19,9 @@ class RelatedData extends Endpoint {
     /**
      * @return Response
      */
-    public function getPeriods() {
-        return $this->master->request(
+    public function getPeriods()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Periods'
         );
@@ -27,8 +30,9 @@ class RelatedData extends Endpoint {
     /**
      * @return Response
      */
-    public function getProductTypes() {
-        return $this->master->request(
+    public function getProductTypes()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/ProductTypes'
         );
@@ -37,8 +41,9 @@ class RelatedData extends Endpoint {
     /**
      * @return Response
      */
-    public function getSegments() {
-        return $this->master->request(
+    public function getSegments()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments'
         );
@@ -48,10 +53,11 @@ class RelatedData extends Endpoint {
      * @param int $siteId
      * @return Response
      */
-    public function getSegmentsForSite($siteId) {
+    public function getSegmentsForSite($siteId)
+    {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments/%d',
@@ -63,8 +69,9 @@ class RelatedData extends Endpoint {
     /**
      * @return Response
      */
-    public function getUnits() {
-        return $this->master->request(
+    public function getUnits()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units'
         );
@@ -74,10 +81,11 @@ class RelatedData extends Endpoint {
      * @param int $siteId
      * @return Response
      */
-    public function getUnitsForSite($siteId) {
+    public function getUnitsForSite($siteId)
+    {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units/%d',
@@ -89,8 +97,9 @@ class RelatedData extends Endpoint {
     /**
      * @return Response
      */
-    public function getVariantGroups() {
-        return $this->master->request(
+    public function getVariantGroups()
+    {
+        return $this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups'
         );
@@ -100,10 +109,11 @@ class RelatedData extends Endpoint {
      * @param int $siteId
      * @return Response
      */
-    public function getVariantGroupsForSite($siteId) {
+    public function getVariantGroupsForSite($siteId)
+    {
         $this->assertInteger($siteId, '$siteId');
 
-        return $this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups/%d',

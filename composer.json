@@ -1,7 +1,7 @@
 {
     "name": "loevgaard/dandomain-api",
+    "type": "library",
     "description": "Dandomain API Wrapper",
-    "minimum-stability": "dev",
     "license": "MIT",
     "authors": [
         {
@@ -13,20 +13,34 @@
     "require": {
         "php": ">=7.1",
         "guzzlehttp/guzzle": "^6.2",
-        "prewk/xml-string-streamer-guzzle": "*",
-        "doctrine/common": "~2.6",
         "beberlei/assert": "^2.7.6"
     },
     "require-dev": {
         "phpunit/phpunit" : "~5.5||~6.0",
-        "squizlabs/php_codesniffer": "^2.3",
-        "symfony/console": "3.*",
-        "memio/memio": "~1.0"
+        "friendsofphp/php-cs-fixer": "^2.0"
     },
     "autoload": {
-        "files": ["src/Dandomain/Api/functions.php"],
-        "psr-0": {
-            "Dandomain": "src/"
+        "files": ["src/functions.php"],
+        "psr-4": {
+            "Loevgaard\\Dandomain\\Api\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Loevgaard\\Dandomain\\Api\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "./vendor/bin/php-cs-fixer fix --verbose --dry-run",
+        "fix-style": "./vendor/bin/php-cs-fixer fix --verbose"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
     }
 }

@@ -1,33 +1,33 @@
 <?php
-namespace Dandomain\Api\Endpoint;
+namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use Assert\Assert;
-use Dandomain\Api\Api;
-use GuzzleHttp\Psr7\Response;
+use Loevgaard\Dandomain\Api\Api;
 
 /**
  * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/ProductService/help Online reference for Product endpoint
  */
-class Product extends Endpoint {
+class Product extends Endpoint
+{
     /**
      * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/ProductService/help/operations/GetProduct
      *
      * @param string $productNumber
      * @param int $siteId
-     * @return \stdClass
+     * @return array
      */
-    public function getProduct(string $productNumber, int $siteId) : \stdClass
+    public function getProduct(string $productNumber, int $siteId) : array
     {
-        Assert::that($siteId)->greaterThan(0);
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/%s/%d',
                 rawurlencode($productNumber),
                 $siteId
             )
-        ));
+        );
     }
 
     /**
@@ -39,17 +39,17 @@ class Product extends Endpoint {
      */
     public function getProductsInCategory(int $categoryId, int $siteId) : array
     {
-        Assert::that($categoryId)->greaterThan(0);
-        Assert::that($siteId)->greaterThan(0);
+        Assert::that($categoryId)->greaterThan(0, 'The $categoryId has to be positive');
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Products/%d/%d',
                 $categoryId,
                 $siteId
             )
-        ));
+        );
     }
 
     /**
@@ -60,15 +60,15 @@ class Product extends Endpoint {
      */
     public function getCategories(int $siteId) : array
     {
-        Assert::that($siteId)->greaterThan(0);
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Categories/%d',
                 $siteId
             )
-        ));
+        );
     }
 
     /**
@@ -76,20 +76,21 @@ class Product extends Endpoint {
      *
      * @param int $categoryId
      * @param int $siteId
-     * @return Response
+     * @return array
      */
-    public function getSubCategories(int $categoryId, int $siteId) {
-        Assert::that($categoryId)->greaterThan(0);
-        Assert::that($siteId)->greaterThan(0);
+    public function getSubCategories(int $categoryId, int $siteId) : array
+    {
+        Assert::that($categoryId)->greaterThan(0, 'The $categoryId has to be positive');
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Categories/%d/%d',
                 $categoryId,
                 $siteId
             )
-        ));
+        );
     }
 
     /**
@@ -97,13 +98,14 @@ class Product extends Endpoint {
      *
      * @param string $productNumber
      * @param array $context
-     * @return \stdClass
+     * @return array
      */
-    public function getProductByMetadata(string $productNumber, array $context) : \stdClass
+    public function getProductByMetadata(string $productNumber, array $context) : array
     {
+        Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
         Assert::that($context)->notEmpty();
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'POST',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/%s',
@@ -112,7 +114,7 @@ class Product extends Endpoint {
             [
                 'json' => $context
             ]
-        ));
+        );
     }
 
     /**
@@ -124,10 +126,10 @@ class Product extends Endpoint {
      */
     public function getProductsInCategoryByMetadata(int $categoryId, array $context) : array
     {
-        Assert::that($categoryId)->greaterThan(0);
+        Assert::that($categoryId)->greaterThan(0, 'The $categoryId has to be positive');
         Assert::that($context)->notEmpty();
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'POST',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Products/%d',
@@ -136,7 +138,7 @@ class Product extends Endpoint {
             [
                 'json' => $context
             ]
-        ));
+        );
     }
 
     /**
@@ -144,21 +146,21 @@ class Product extends Endpoint {
      *
      * @param int $categoryId
      * @param int $siteId
-     * @return \stdClass
+     * @return array
      */
-    public function getCategory(int $categoryId, int $siteId) : \stdClass
+    public function getCategory(int $categoryId, int $siteId) : array
     {
-        Assert::that($categoryId)->greaterThan(0);
-        Assert::that($siteId)->greaterThan(0);
+        Assert::that($categoryId)->greaterThan(0, 'The $categoryId has to be positive');
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Category/%d/%d',
                 $categoryId,
                 $siteId
             )
-        ));
+        );
     }
 
     /**
@@ -172,16 +174,13 @@ class Product extends Endpoint {
      */
     public function findProductNumbersByKeyword(string $keyword, int $siteId, int $pageSize = 100, int $page = 1) : array
     {
-        Assert::that($siteId)->greaterThan(0);
-        Assert::that($pageSize)->greaterThan(0);
-        Assert::that($page)->greaterThan(0);
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
+        Assert::that($pageSize)->greaterThan(0, 'The $pageSize has to be positive');
+        Assert::that($page)->greaterThan(0, 'The $page has to be positive');
 
-        $query = '';
-        if($pageSize) {
-            $query = sprintf('?page_size=%d&page=%d', $pageSize, $page);
-        }
+        $query = sprintf('?page_size=%d&page=%d', $pageSize, $page);
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/FindProductNumbersByKeyword/%s/%d%s',
@@ -189,7 +188,7 @@ class Product extends Endpoint {
                 $siteId,
                 $query
             )
-        ));
+        );
     }
 
     /**
@@ -201,16 +200,17 @@ class Product extends Endpoint {
      */
     public function getProductsByBarcode(string $barCode, int $siteId) : array
     {
-        Assert::that($siteId)->greaterThan(0);
+        Assert::that($barCode)->minLength(1, 'The length of $barCode has to be > 0');
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/ByBarcode/%s/%d',
                 rawurlencode($barCode),
                 $siteId
             )
-        ));
+        );
     }
 
     /**
@@ -222,16 +222,16 @@ class Product extends Endpoint {
      */
     public function getProductsByModificationDate(\DateTimeInterface $modificationDate, int $siteId) : array
     {
-        Assert::that($siteId)->greaterThan(0);
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/ByModificationDate/%s/%d',
                 $modificationDate->format('Y-m-d'),
                 $siteId
             )
-        ));
+        );
     }
 
     /**
@@ -243,17 +243,17 @@ class Product extends Endpoint {
      */
     public function findProductsByProductNumbers(int $siteId, array $productNumbers) : array
     {
-        Assert::that($siteId)->greaterThan(0);
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
         Assert::that($productNumbers)->notEmpty();
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/FindProductsByProductNumbers/%d',
                 $siteId
             ),
             ['json' => $productNumbers]
-        ));
+        );
     }
 
     /**
@@ -266,9 +266,9 @@ class Product extends Endpoint {
      */
     public function getProductsInModifiedInterval(int $siteId, \DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) : array
     {
-        Assert::that($siteId)->greaterThan(0);
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return Api::decodeResponse($this->master->request(
+        return $this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/GetByModifiedInterval/%d?start=%s&end=%s',
@@ -276,6 +276,6 @@ class Product extends Endpoint {
                 $dateStart->format('Y-m-d\TH:i:s'),
                 $dateEnd->format('Y-m-d\TH:i:s')
             )
-        ));
+        );
     }
 }

@@ -1,14 +1,13 @@
 <?php
-namespace Dandomain\Api;
+namespace Loevgaard\Dandomain\Api;
 
 use Assert\Assert;
-use Dandomain\Api\Endpoint;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\RequestOptions;
+use Loevgaard\Dandomain\Api\Endpoint;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -20,7 +19,8 @@ use Psr\Http\Message\ResponseInterface;
  * @property Endpoint\RelatedData $relatedData
  * @property Endpoint\Settings $settings
  */
-class Api {
+class Api
+{
     /**
      * Example: http://www.example.com
      *
@@ -41,11 +41,6 @@ class Api {
      * @var ClientInterface
      */
     protected $client;
-
-    /**
-     * @var Request
-     */
-    protected $request;
 
     /**
      * This is the last response
@@ -102,85 +97,26 @@ class Api {
      */
     protected $settings;
 
-    public function __construct(string $host, string $apiKey) {
+    public function __construct(string $host, string $apiKey)
+    {
         $host = rtrim($host, '/');
 
         Assert::that($host)->url('`$host` is not a valid URL');
+        Assert::that($apiKey)->length(36, '`$apiKey` is not a valid api key. It must be 36 characters');
 
         $this->host = $host;
         $this->apiKey = $apiKey;
         $this->requestOptions = [];
+
+        // set the default request options
         $this->defaultRequestOptions = [
-            'headers' => [
+            RequestOptions::HEADERS => [
                 'Accept' => 'application/json',
             ],
-            'verify' => false,
+            RequestOptions::CONNECT_TIMEOUT => 15,
+            RequestOptions::TIMEOUT => 60,
+            RequestOptions::HTTP_ERRORS => false
         ];
-    }
-
-    /**
-     * @param string $method
-     * @param string $uri
-     * @param array $options
-     * @return ResponseInterface
-     * @throws \Exception
-     */
-    public function request(string $method, string $uri, array $options = []) : ResponseInterface
-    {
-        try {
-            // @todo instead of catching exception, set http errors to false
-            // and return an error object according to http://jsonapi.org/format/#errors
-
-            // merge all options
-            // the priority is
-            // 1. options supplied by the user
-            // 2. options supplied by the method calling
-            // 3. the default options
-            $options = array_merge($this->defaultRequestOptions, $options, $this->requestOptions);
-            $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
-
-            $this->response = $this->client->request($method, $url, $options);
-
-            // reset request options
-            $this->requestOptions = [];
-
-            return $this->response;
-        } catch (GuzzleException $e) {
-            throw $this->parseException($e);
-        }
-    }
-
-    /**
-     * @param GuzzleException $e
-     * @return \Exception
-     */
-    protected function parseException(GuzzleException $e) : \Exception
-    {
-        $exceptionMapping = [
-            'client' => [
-                [
-                    'statusCode'    => 404,
-                    'match'         => '/ProductNotFound/i',
-                    'exception'     => '\Dandomain\Api\Exception\ProductNotFoundException',
-                ],
-                [
-                    'statusCode'    => 400,
-                    'match'         => '/ShippingMethodNotValid/i',
-                    'exception'     => '\Dandomain\Api\Exception\ShippingMethodNotValidException',
-                ]
-            ]
-        ];
-        if($e instanceof ClientException) {
-            /** @var ClientException $e */
-            foreach ($exceptionMapping['client'] as $item) {
-                if($e->getResponse()->getStatusCode() == $item['statusCode'] && preg_match($item['match'], $e->getResponse()->getBody()->getContents())) {
-                    /** @var ClientException $newE */
-                    $newE = new $item['exception']($e->getMessage(), $e->getRequest(), $e->getResponse(), $e, $e->getHandlerContext());
-                    return $newE;
-                }
-            }
-        }
-        return $e;
     }
 
     /**
@@ -192,28 +128,82 @@ class Api {
     public function __get($name)
     {
         $className = 'Dandomain\\Api\\Endpoint\\'.ucfirst($name);
-        if(property_exists(static::class, $name)) {
-            if(!$this->{$name}) {
+        if (property_exists(static::class, $name)) {
+            if (!$this->{$name}) {
                 $this->{$name} = new $className($this);
             }
             return $this->{$name};
-        } else {
-            $trace = debug_backtrace();
-            trigger_error(
+        }
+        $trace = debug_backtrace();
+        trigger_error(
                 'Undefined property via __get(): ' . $name .
                 ' in ' . $trace[0]['file'] .
                 ' on line ' . $trace[0]['line'],
-                E_USER_NOTICE);
-            return null;
-        }
+                E_USER_NOTICE
+            );
+        return null;
     }
 
     /**
-     * @param ResponseInterface $response
+     * Will always return a JSON result contrary to Dandomains API
+     * Errors are formatted as described here: http://jsonapi.org/format/#errors
+     *
+     * @param string $method
+     * @param string $uri
+     * @param array $options
      * @return mixed
      */
-    public static function decodeResponse(ResponseInterface $response) {
-        return \GuzzleHttp\json_decode((string)$response->getBody());
+    public function doRequest(string $method, string $uri, array $options = [])
+    {
+        $parsedResponse = ['errors' => []];
+
+        try {
+            // and return an error object according to http://jsonapi.org/format/#errors
+
+            // merge all options
+            // the priority is
+            // 1. options supplied by the user
+            // 2. options supplied by the method calling
+            // 3. the default options
+            $options = array_merge($this->defaultRequestOptions, $options, $this->requestOptions);
+            $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
+
+            // do request
+            $this->response = $this->client->request($method, $url, $options);
+
+            // parse response and create error object if the json decode throws an exception
+            try {
+                $parsedResponse = \GuzzleHttp\json_decode((string)$this->response->getBody(), true);
+            } catch (\InvalidArgumentException $e) {
+                $parsedResponse['errors'][] = [
+                    'status' => $this->response->getStatusCode(),
+                    'title' => 'JSON parse error',
+                    'detail' => $e->getMessage()
+                ];
+            }
+
+            if ($this->response->getStatusCode() !== 200) {
+                $parsedResponse['errors'][] = [
+                    'status' => $this->response->getStatusCode(),
+                    'detail' => 'See Api::$response for details'
+                ];
+            }
+        } catch (GuzzleException $e) {
+            $parsedResponse['errors'][] = [
+                'title' => 'Unexpected error',
+                'detail' => $e->getMessage()
+            ];
+        } finally {
+            // reset request options
+            $this->requestOptions = [];
+
+            // unset errors if empty
+            if (isset($parsedResponse['errors']) && empty($parsedResponse['errors'])) {
+                unset($parsedResponse['errors']);
+            }
+        }
+
+        return $parsedResponse;
     }
 
     /**
@@ -221,7 +211,7 @@ class Api {
      */
     public function getClient() : ClientInterface
     {
-        if(!$this->client) {
+        if (!$this->client) {
             $this->client = new Client();
         }
 
