@@ -1,20 +1,20 @@
 <?php
-namespace Dandomain\Api;
+namespace Loevgaard\Dandomain\Api;
 
-use Dandomain\Api\Endpoint\Customer;
-use Dandomain\Api\Endpoint\Order;
-use Dandomain\Api\Endpoint\Product;
-use Dandomain\Api\Endpoint\ProductData;
-use Dandomain\Api\Endpoint\ProductTag;
-use Dandomain\Api\Endpoint\RelatedData;
-use Dandomain\Api\Endpoint\Settings;
+use Loevgaard\Dandomain\Api\Endpoint\Customer;
+use Loevgaard\Dandomain\Api\Endpoint\Order;
+use Loevgaard\Dandomain\Api\Endpoint\Product;
+use Loevgaard\Dandomain\Api\Endpoint\ProductData;
+use Loevgaard\Dandomain\Api\Endpoint\ProductTag;
+use Loevgaard\Dandomain\Api\Endpoint\RelatedData;
+use Loevgaard\Dandomain\Api\Endpoint\Settings;
 use PHPUnit\Framework\TestCase;
 
-class ApiTest extends TestCase
+final class ApiTest extends TestCase
 {
     public function testGetMagicGetters()
     {
-        $api = new Api('http://www.example.com', 'api');
+        $api = new Api('http://www.example.com', 'apikeyapikeyapikeyapikeyapikeyapikey');
 
         $endpoint = $api->customer;
         $this->assertInstanceOf(Customer::class, $endpoint);

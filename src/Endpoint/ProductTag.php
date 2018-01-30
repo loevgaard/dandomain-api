@@ -21,7 +21,7 @@ class ProductTag extends Endpoint
      * @param int $pageSize
      * @return int
      */
-    public function getProductTagPageCount(int $pageSize = 100)
+    public function getProductTagPageCount(int $pageSize = 100) : int
     {
         Assert::that($pageSize)->greaterThan(0, '$pageSize has to be positive');
 
@@ -62,11 +62,11 @@ class ProductTag extends Endpoint
         $tag = objectToArray($tag);
         Assert::that($tag)->notEmpty('$tag must not be empty');
 
-        return \GuzzleHttp\json_decode((string)$this->master->doRequest(
+        return (array)$this->master->doRequest(
             'POST',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}'),
             ['json' => $tag]
-        )->getBody());
+        );
     }
 
     /**
@@ -80,7 +80,7 @@ class ProductTag extends Endpoint
         $tag = objectToArray($tag);
         Assert::that($tag)->notEmpty('$tag must not be empty');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'PUT',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}'),
             ['json' => $tag]
@@ -95,7 +95,7 @@ class ProductTag extends Endpoint
     {
         Assert::that($id)->greaterThan(0, '$id has to be positive');
 
-        return $this->master->doRequest(
+        return (bool)$this->master->doRequest(
             'DELETE',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}/%d', $id)
         );
@@ -111,7 +111,7 @@ class ProductTag extends Endpoint
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
         Assert::that($tagValueId)->greaterThan(0, '$tagValueId has to be positive');
 
-        return $this->master->doRequest(
+        return (bool)$this->master->doRequest(
             'PUT',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}/AssignTagValueToProduct/%s/%d', rawurlencode($productNumber), $tagValueId)
         );

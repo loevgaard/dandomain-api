@@ -1,80 +1,95 @@
 <?php
 namespace Loevgaard\Dandomain\Api\Endpoint;
 
-use GuzzleHttp\Psr7\Response;
+use Assert\Assert;
 
+/**
+ * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/SettingService/help
+ */
 class Settings extends Endpoint
 {
     /**
-     * @return Response
+     * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/SettingService/help/operations/GetSites
+     *
+     * @return array
      */
-    public function getSites()
+    public function getSites() : array
     {
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Sites'
         );
     }
 
     /**
-     * @return Response
+     * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/SettingService/help/operations/GetCountries
+     *
+     * @return array
      */
-    public function getCountries()
+    public function getCountries() : array
     {
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Countries'
         );
     }
 
     /**
-     * @return Response
+     * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/SettingService/help/operations/GetCurrencies
+     *
+     * @return array
      */
-    public function getCurrencies()
+    public function getCurrencies() : array
     {
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/Currencies'
         );
     }
 
     /**
+     * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/SettingService/help/operations/GetPaymentMethods
+     *
      * @param int $siteId
-     * @return Response
+     * @return array
      */
-    public function getPaymentMethods($siteId)
+    public function getPaymentMethods(int $siteId) : array
     {
-        $this->assertInteger($siteId, '$siteId');
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/PaymentMethods/%d', $siteId)
         );
     }
 
     /**
+     * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/SettingService/help/operations/GetShippingMethods
+     *
      * @param int $siteId
-     * @return Response
+     * @return array
      */
-    public function getShippingMethods($siteId)
+    public function getShippingMethods(int $siteId) : array
     {
-        $this->assertInteger($siteId, '$siteId');
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/ShippingMethods/%d', $siteId)
         );
     }
 
     /**
+     * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/SettingService/help/operations/GetCompanyInfo
+     *
      * @param int $siteId
-     * @return Response
+     * @return array
      */
-    public function getCompanyInfo($siteId)
+    public function getCompanyInfo(int $siteId) : array
     {
-        $this->assertInteger($siteId, '$siteId');
+        Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/SettingService/{KEY}/CompanyInfo/%d', $siteId)
         );

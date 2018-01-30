@@ -127,7 +127,7 @@ class Api
      */
     public function __get($name)
     {
-        $className = 'Dandomain\\Api\\Endpoint\\'.ucfirst($name);
+        $className = 'Loevgaard\\Dandomain\\Api\\Endpoint\\'.ucfirst($name);
         if (property_exists(static::class, $name)) {
             if (!$this->{$name}) {
                 $this->{$name} = new $className($this);

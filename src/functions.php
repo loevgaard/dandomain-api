@@ -8,7 +8,7 @@ namespace Loevgaard\Dandomain\Api;
  * @param string|\DateTimeZone $timeZone
  * @return \DateTime
  */
-function jsonDateToDate($date, $timeZone = null)
+function jsonDateToDate($date, $timeZone = null) : \DateTime
 {
     preg_match('/([0-9]+)\+/', $date, $matches);
     if (!isset($matches[1])) {
