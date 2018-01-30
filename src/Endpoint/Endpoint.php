@@ -10,7 +10,7 @@ abstract class Endpoint
      */
     protected $master;
 
-    public function __construct($master)
+    public function __construct(Api $master)
     {
         $this->master = $master;
     }

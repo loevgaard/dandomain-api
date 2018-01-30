@@ -2,22 +2,44 @@
 namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use Assert\Assert;
+use function Loevgaard\Dandomain\Api\objectToArray;
 
 class Order extends Endpoint
 {
     /**
-     * @param array|\stdClass $obj
+     * @param \DateTimeInterface $dateStart
+     * @param \DateTimeInterface $dateEnd
+     * @param int|null $orderStateId
+     * @return int
+     */
+    public function countByModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, ?int $orderStateId = null) : int
+    {
+        Assert::that($dateStart)->lessThan($dateEnd, '$dateStart must be before $dateEnd');
+        Assert::thatNullOr($orderStateId)->integer('$orderStateId must be an integer');
+
+        $q = sprintf(
+            '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/CountByModifiedInterval?start=%s&end=%s',
+            $dateStart->format('Y-m-d\TH:i:s'),
+            $dateEnd->format('Y-m-d\TH:i:s')
+        );
+
+        if ($orderStateId) {
+            $q .= sprintf('&orderstateid=%d', $orderStateId);
+        }
+
+        return (int)$this->master->doRequest('GET', $q);
+    }
+
+    /**
+     * @param array|\stdClass $order
      * @return array
      */
-    public function createOrder($obj) : array
+    public function createOrder($order) : array
     {
-        Assert::that($obj)->notEmpty();
+        $order = objectToArray($order);
+        Assert::that($order)->notEmpty('$order must not be empty');
 
-        return $this->master->doRequest(
-            'POST',
-            '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}',
-            ['json' => $obj]
-        );
+        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}', ['json' => $order]);
     }
 
     /**
@@ -27,9 +49,9 @@ class Order extends Endpoint
      */
     public function getOrders(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) : array
     {
-        Assert::that($dateStart)->lessThan($dateEnd, '$dateStart has be before $dateEnd');
+        Assert::that($dateStart)->lessThan($dateEnd, '$dateStart must be before $dateEnd');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByDateInterval?start=%s&end=%s',
@@ -47,13 +69,7 @@ class Order extends Endpoint
     {
         Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
 
-        return $this->master->doRequest(
-            'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/%d',
-                $orderId
-            )
-        );
+        return (array)$this->master->doRequest('GET', sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/%d', $orderId));
     }
 
     /**
@@ -66,13 +82,7 @@ class Order extends Endpoint
     {
         Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
 
-        return $this->master->doRequest(
-            'DELETE',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/%d',
-                $orderId
-            )
-        );
+        return (bool)$this->master->doRequest('DELETE', sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/%d', $orderId));
     }
 
     /**
@@ -83,12 +93,9 @@ class Order extends Endpoint
     {
         Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
 
-        return $this->master->doRequest(
+        return (bool)$this->master->doRequest(
             'PUT',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/CompleteOrder/%d',
-                $orderId
-            )
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/CompleteOrder/%d', $orderId)
         );
     }
 
@@ -100,32 +107,40 @@ class Order extends Endpoint
     {
         Assert::that($customerNumber)->greaterThan(0, 'The $customerNumber has to be positive');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByCustomerNumber/%d',
-                $customerNumber
-            )
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByCustomerNumber/%d', $customerNumber)
         );
     }
 
     /**
      * @param \DateTimeInterface $dateStart
      * @param \DateTimeInterface $dateEnd
+     * @param int $page
+     * @param int $pageSize
+     * @param int|null $orderStateId
      * @return array
      */
-    public function getOrdersInModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) : array
+    public function getOrdersInModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, int $page = 1, int $pageSize = 100, ?int $orderStateId = null) : array
     {
-        Assert::that($dateStart)->lessThan($dateEnd, '$dateStart has be before $dateEnd');
+        Assert::that($dateStart)->lessThan($dateEnd, '$dateStart must be before $dateEnd');
+        Assert::that($page)->greaterThan(0, 'The $page has to be positive');
+        Assert::that($pageSize)->greaterThan(0, 'The $pageSize has to be positive');
+        Assert::thatNullOr($orderStateId)->integer('$orderStateId must be an integer');
 
-        return $this->master->doRequest(
-            'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByModifiedInterval?start=%s&end=%s',
-                $dateStart->format('Y-m-d\TH:i:s'),
-                $dateEnd->format('Y-m-d\TH:i:s')
-            )
+        $q = sprintf(
+            '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByModifiedInterval?start=%s&end=%s&pageIndex=%d&pageSize=%d',
+            $dateStart->format('Y-m-d\TH:i:s'),
+            $dateEnd->format('Y-m-d\TH:i:s'),
+            $page,
+            $pageSize
         );
+
+        if ($orderStateId) {
+            $q .= sprintf('&orderstateid=%d', $orderStateId);
+        }
+
+        return (array)$this->master->doRequest('GET', $q);
     }
 
     /**
@@ -133,10 +148,7 @@ class Order extends Endpoint
      */
     public function getOrderStates() : array
     {
-        return $this->master->doRequest(
-            'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/OrderStates'
-        );
+        return (array)$this->master->doRequest('GET', '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/OrderStates');
     }
 
     /**
@@ -149,7 +161,7 @@ class Order extends Endpoint
         Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
         Assert::that($comment)->minLength(1, 'The length of $comment has to be > 0');
 
-        return $this->master->doRequest(
+        return (bool)$this->master->doRequest(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/SetOrderComment/%d?comment=%s',
@@ -169,13 +181,9 @@ class Order extends Endpoint
         Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
         Assert::that($orderState)->greaterThan(0, 'The $orderState has to be positive');
 
-        return $this->master->doRequest(
+        return (bool)$this->master->doRequest(
             'PUT',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/SetOrderState/%d/%d',
-                $orderId,
-                $orderState
-            )
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/SetOrderState/%d/%d', $orderId, $orderState)
         );
     }
 
@@ -189,7 +197,7 @@ class Order extends Endpoint
         Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
         Assert::that($trackingNumber)->minLength(1, 'The length of $trackingNumber has to be > 0');
 
-        return $this->master->doRequest(
+        return (bool)$this->master->doRequest(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/SetTrackNumber/%d?tracknumber=%s',

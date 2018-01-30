@@ -3,6 +3,7 @@ namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use Assert\Assert;
 use Loevgaard\Dandomain\Api\Api;
+use function Loevgaard\Dandomain\Api\objectToArray;
 
 class Customer extends Endpoint
 {
@@ -15,9 +16,9 @@ class Customer extends Endpoint
      */
     public function getCustomer(int $customerId) : array
     {
-        Assert::that($customerId)->greaterThan(0);
+        Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
@@ -36,7 +37,7 @@ class Customer extends Endpoint
     {
         Assert::that($email)->email();
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerByEmail?email=%s',
@@ -53,7 +54,10 @@ class Customer extends Endpoint
      */
     public function createCustomer($customer) : array
     {
-        return $this->master->doRequest(
+        $customer = objectToArray($customer);
+        Assert::that($customer)->notEmpty('$customer must not be empty');
+
+        return (array)$this->master->doRequest(
             'POST',
             '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}',
             ['json' => $customer]
@@ -69,9 +73,11 @@ class Customer extends Endpoint
      */
     public function updateCustomer(int $customerId, $customer) : array
     {
-        Assert::that($customerId)->greaterThan(0);
+        Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
+        $customer = objectToArray($customer);
+        Assert::that($customer)->notEmpty('$customer must not be empty');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'PUT',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
@@ -87,11 +93,11 @@ class Customer extends Endpoint
      * @param int $customerId
      * @return boolean
      */
-    public function deleteCustomer(int $customerId) : boolean
+    public function deleteCustomer(int $customerId) : bool
     {
-        Assert::that($customerId)->greaterThan(0);
+        Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
 
-        return $this->master->doRequest(
+        return (bool)$this->master->doRequest(
             'DELETE',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
@@ -107,7 +113,7 @@ class Customer extends Endpoint
      */
     public function getCustomerGroups() : array
     {
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/CustomerGroup'
         );
@@ -122,9 +128,11 @@ class Customer extends Endpoint
      */
     public function updateCustomerDiscount(int $customerId, $customerDiscount) : array
     {
-        Assert::that($customerId)->greaterThan(0);
+        Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
+        $customerDiscount = objectToArray($customerDiscount);
+        Assert::that($customerDiscount)->notEmpty('$customerDiscount must not be empty');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'POST',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/UpdateCustomerDiscount/%d',
@@ -142,9 +150,9 @@ class Customer extends Endpoint
      */
     public function getCustomerDiscount(int $customerId) : array
     {
-        Assert::that($customerId)->greaterThan(0);
+        Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
 
-        return $this->master->doRequest(
+        return (array)$this->master->doRequest(
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerDiscount/%d',
