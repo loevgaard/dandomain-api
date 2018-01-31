@@ -1,6 +1,4 @@
 /vendor/
-/composer.phar
 composer.lock
-/.idea
-phpunit.phar
-/phpunit.xml
+/.php_cs.cache
+/build/

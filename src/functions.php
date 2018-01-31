@@ -1,5 +1,5 @@
 <?php
-namespace Dandomain\Api;
+namespace Loevgaard\Dandomain\Api;
 
 /**
  * Return a \DateTime object based on a json string, i.e. '/Date(1484759471000+0100)/'
@@ -8,9 +8,10 @@ namespace Dandomain\Api;
  * @param string|\DateTimeZone $timeZone
  * @return \DateTime
  */
-function jsonDateToDate($date, $timeZone = null) {
+function jsonDateToDate($date, $timeZone = null) : \DateTime
+{
     preg_match('/([0-9]+)\+/', $date, $matches);
-    if(!isset($matches[1])) {
+    if (!isset($matches[1])) {
         throw new \InvalidArgumentException('$date is not a valid JSON date. Input: ' . $date);
     }
     // remove the last three digits since the json date is given in milliseconds
@@ -18,8 +19,8 @@ function jsonDateToDate($date, $timeZone = null) {
 
     $dateTime = new \DateTime('@' . $timestamp, new \DateTimeZone('UTC'));
 
-    if($timeZone) {
-        if(is_string($timeZone)) {
+    if ($timeZone) {
+        if (is_string($timeZone)) {
             $timeZone = new \DateTimeZone($timeZone);
         }
     } else {
@@ -28,4 +29,13 @@ function jsonDateToDate($date, $timeZone = null) {
     $dateTime->setTimezone($timeZone);
 
     return $dateTime;
+}
+
+function objectToArray($obj) : array
+{
+    if ($obj instanceof \stdClass) {
+        $obj = json_decode(json_encode($obj), true);
+    }
+
+    return (array)$obj;
 }
