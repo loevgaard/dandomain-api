@@ -2,8 +2,6 @@
 namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use Assert\Assert;
-use Loevgaard\Dandomain\Api\Api;
-use function Loevgaard\Dandomain\Api\objectToArray;
 
 class Customer extends Endpoint
 {
@@ -54,7 +52,7 @@ class Customer extends Endpoint
      */
     public function createCustomer($customer) : array
     {
-        $customer = objectToArray($customer);
+        $customer = $this->objectToArray($customer);
         Assert::that($customer)->notEmpty('$customer must not be empty');
 
         return (array)$this->master->doRequest(
@@ -74,7 +72,7 @@ class Customer extends Endpoint
     public function updateCustomer(int $customerId, $customer) : array
     {
         Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
-        $customer = objectToArray($customer);
+        $customer = $this->objectToArray($customer);
         Assert::that($customer)->notEmpty('$customer must not be empty');
 
         return (array)$this->master->doRequest(
@@ -129,7 +127,7 @@ class Customer extends Endpoint
     public function updateCustomerDiscount(int $customerId, $customerDiscount) : array
     {
         Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
-        $customerDiscount = objectToArray($customerDiscount);
+        $customerDiscount = $this->objectToArray($customerDiscount);
         Assert::that($customerDiscount)->notEmpty('$customerDiscount must not be empty');
 
         return (array)$this->master->doRequest(

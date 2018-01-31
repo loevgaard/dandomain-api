@@ -2,7 +2,6 @@
 namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use Assert\Assert;
-use function Loevgaard\Dandomain\Api\objectToArray;
 
 class Order extends Endpoint
 {
@@ -36,7 +35,7 @@ class Order extends Endpoint
      */
     public function createOrder($order) : array
     {
-        $order = objectToArray($order);
+        $order = $this->objectToArray($order);
         Assert::that($order)->notEmpty('$order must not be empty');
 
         return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}', ['json' => $order]);

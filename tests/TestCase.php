@@ -10,7 +10,7 @@ abstract class TestCase extends BaseTestCase
     {
         $api = new Api('https://example.com', 'apikeyapikeyapikeyapikeyapikeyapikey');
 
-        if($client) {
+        if ($client) {
             $api->setClient($client);
         }
 

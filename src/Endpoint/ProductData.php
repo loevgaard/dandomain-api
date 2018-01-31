@@ -2,7 +2,6 @@
 namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use Assert\Assert;
-use function Loevgaard\Dandomain\Api\objectToArray;
 
 class ProductData extends Endpoint
 {
@@ -110,7 +109,7 @@ class ProductData extends Endpoint
      */
     public function createProduct($product) : array
     {
-        $product = objectToArray($product);
+        $product = $this->objectToArray($product);
 
         return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}', ['json' => $product]);
     }
@@ -277,7 +276,7 @@ class ProductData extends Endpoint
      */
     public function createCategory($category) : array
     {
-        $category = objectToArray($category);
+        $category = $this->objectToArray($category);
         Assert::that($category)->notEmpty('$category must not be empty');
 
         return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category', ['json' => $category]);
@@ -319,7 +318,7 @@ class ProductData extends Endpoint
     public function updateProduct(string $productNumber, $product) : array
     {
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-        $product = objectToArray($product);
+        $product = $this->objectToArray($product);
         Assert::that($product)->notEmpty('$product must not be empty');
 
         return (array)$this->master->doRequest(
@@ -364,7 +363,7 @@ class ProductData extends Endpoint
     public function createPrice(string $productNumber, $price) : array
     {
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-        $price = objectToArray($price);
+        $price = $this->objectToArray($price);
         Assert::that($price)->notEmpty('$price must not be empty');
 
         return (array)$this->master->doRequest(
@@ -382,7 +381,7 @@ class ProductData extends Endpoint
     public function deletePrice(string $productNumber, $price) : bool
     {
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-        $price = objectToArray($price);
+        $price = $this->objectToArray($price);
         Assert::that($price)->notEmpty('$price must not be empty');
 
         return (bool)$this->master->doRequest(

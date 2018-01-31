@@ -2,7 +2,6 @@
 namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use Assert\Assert;
-use function Loevgaard\Dandomain\Api\objectToArray;
 
 class ProductTag extends Endpoint
 {
@@ -59,7 +58,7 @@ class ProductTag extends Endpoint
      */
     public function createProductTag($tag) : array
     {
-        $tag = objectToArray($tag);
+        $tag = $this->objectToArray($tag);
         Assert::that($tag)->notEmpty('$tag must not be empty');
 
         return (array)$this->master->doRequest(
@@ -77,7 +76,7 @@ class ProductTag extends Endpoint
      */
     public function updateProductTag($tag) : array
     {
-        $tag = objectToArray($tag);
+        $tag = $this->objectToArray($tag);
         Assert::that($tag)->notEmpty('$tag must not be empty');
 
         return (array)$this->master->doRequest(
