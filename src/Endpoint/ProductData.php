@@ -109,9 +109,7 @@ class ProductData extends Endpoint
      */
     public function createProduct($product) : array
     {
-        $product = $this->objectToArray($product);
-
-        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}', ['json' => $product]);
+        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}', $product);
     }
 
     /**
@@ -276,10 +274,7 @@ class ProductData extends Endpoint
      */
     public function createCategory($category) : array
     {
-        $category = $this->objectToArray($category);
-        Assert::that($category)->notEmpty('$category must not be empty');
-
-        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category', ['json' => $category]);
+        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/Category', $category);
     }
 
     /**
@@ -318,13 +313,11 @@ class ProductData extends Endpoint
     public function updateProduct(string $productNumber, $product) : array
     {
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-        $product = $this->objectToArray($product);
-        Assert::that($product)->notEmpty('$product must not be empty');
 
         return (array)$this->master->doRequest(
             'PUT',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s', rawurlencode($productNumber)),
-            ['json' => $product]
+            $product
         );
     }
 
@@ -351,7 +344,7 @@ class ProductData extends Endpoint
         return (array)$this->master->doRequest(
             'PATCH',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s', rawurlencode($productNumber)),
-            ['json' => $data]
+            $data
         );
     }
 
@@ -363,13 +356,11 @@ class ProductData extends Endpoint
     public function createPrice(string $productNumber, $price) : array
     {
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-        $price = $this->objectToArray($price);
-        Assert::that($price)->notEmpty('$price must not be empty');
 
         return (array)$this->master->doRequest(
             'POST',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices', rawurlencode($productNumber)),
-            ['json' => $price]
+            $price
         );
     }
 
@@ -381,13 +372,11 @@ class ProductData extends Endpoint
     public function deletePrice(string $productNumber, $price) : bool
     {
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-        $price = $this->objectToArray($price);
-        Assert::that($price)->notEmpty('$price must not be empty');
 
         return (bool)$this->master->doRequest(
             'DELETE',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s/Prices', rawurlencode($productNumber)),
-            ['json' => $price]
+            $price
         );
     }
 
@@ -434,7 +423,7 @@ class ProductData extends Endpoint
                 $siteId,
                 rawurlencode($productNumber)
             ),
-            ['json' => $data]
+            $data
         );
     }
 }

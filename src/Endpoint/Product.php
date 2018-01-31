@@ -93,7 +93,7 @@ class Product extends Endpoint
         return (array)$this->master->doRequest(
             'POST',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/%s', rawurlencode($productNumber)),
-            ['json' => $context]
+            $context
         );
     }
 
@@ -112,7 +112,7 @@ class Product extends Endpoint
         return (array)$this->master->doRequest(
             'POST',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/Products/%d', $categoryId),
-            ['json' => $context]
+            $context
         );
     }
 
@@ -217,7 +217,7 @@ class Product extends Endpoint
         return (array)$this->master->doRequest(
             'GET',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductService/{KEY}/FindProductsByProductNumbers/%d', $siteId),
-            ['json' => $body]
+            $body
         );
     }
 

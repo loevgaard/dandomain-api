@@ -18,10 +18,7 @@ class Customer extends Endpoint
 
         return (array)$this->master->doRequest(
             'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
-                $customerId
-            )
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d', $customerId)
         );
     }
 
@@ -37,10 +34,7 @@ class Customer extends Endpoint
 
         return (array)$this->master->doRequest(
             'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerByEmail?email=%s',
-                rawurlencode($email)
-            )
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerByEmail?email=%s', rawurlencode($email))
         );
     }
 
@@ -52,14 +46,7 @@ class Customer extends Endpoint
      */
     public function createCustomer($customer) : array
     {
-        $customer = $this->objectToArray($customer);
-        Assert::that($customer)->notEmpty('$customer must not be empty');
-
-        return (array)$this->master->doRequest(
-            'POST',
-            '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}',
-            ['json' => $customer]
-        );
+        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}', $customer);
     }
 
     /**
@@ -72,16 +59,11 @@ class Customer extends Endpoint
     public function updateCustomer(int $customerId, $customer) : array
     {
         Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
-        $customer = $this->objectToArray($customer);
-        Assert::that($customer)->notEmpty('$customer must not be empty');
 
         return (array)$this->master->doRequest(
             'PUT',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d',
-                $customerId
-            ),
-            ['json' => $customer]
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d', $customerId),
+            $customer
         );
     }
 
@@ -127,16 +109,11 @@ class Customer extends Endpoint
     public function updateCustomerDiscount(int $customerId, $customerDiscount) : array
     {
         Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
-        $customerDiscount = $this->objectToArray($customerDiscount);
-        Assert::that($customerDiscount)->notEmpty('$customerDiscount must not be empty');
 
         return (array)$this->master->doRequest(
             'POST',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/UpdateCustomerDiscount/%d',
-                $customerId
-            ),
-            ['json' => $customerDiscount]
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/UpdateCustomerDiscount/%d', $customerId),
+            $customerDiscount
         );
     }
 

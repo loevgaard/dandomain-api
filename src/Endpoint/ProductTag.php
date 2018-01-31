@@ -58,13 +58,10 @@ class ProductTag extends Endpoint
      */
     public function createProductTag($tag) : array
     {
-        $tag = $this->objectToArray($tag);
-        Assert::that($tag)->notEmpty('$tag must not be empty');
-
         return (array)$this->master->doRequest(
             'POST',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}'),
-            ['json' => $tag]
+            $tag
         );
     }
 
@@ -76,13 +73,10 @@ class ProductTag extends Endpoint
      */
     public function updateProductTag($tag) : array
     {
-        $tag = $this->objectToArray($tag);
-        Assert::that($tag)->notEmpty('$tag must not be empty');
-
         return (array)$this->master->doRequest(
             'PUT',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductTagService/{KEY}'),
-            ['json' => $tag]
+            $tag
         );
     }
 

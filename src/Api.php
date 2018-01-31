@@ -7,11 +7,11 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
-use Loevgaard\Dandomain\Api\Endpoint;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @property Endpoint\Customer $customer
+ * @property Endpoint\Discount $discount
  * @property Endpoint\Order $order
  * @property Endpoint\Product $product
  * @property Endpoint\ProductData $productData
@@ -50,22 +50,39 @@ class Api
     protected $response;
 
     /**
+     * These are the options used for the next request
+     * After that request, these options are reset
+     *
      * @var array
      */
-    protected $requestOptions;
+    protected $options;
 
     /**
+     * These are default options used for every request
+     *
      * @var array
      */
-    protected $defaultRequestOptions;
+    protected $defaultOptions;
 
     /**
+     * These are the resolved options used in the last request
+     *
+     * @var array
+     */
+    protected $lastOptions;
+
+    /*
      * These are endpoints in the Dandomain API
      */
     /**
      * @var Endpoint\Customer
      */
     protected $customer;
+
+    /**
+     * @var Endpoint\Discount
+     */
+    protected $discount;
 
     /**
      * @var Endpoint\Order;
@@ -97,7 +114,7 @@ class Api
      */
     protected $settings;
 
-    public function __construct(string $host, string $apiKey)
+    public function __construct(string $host, string $apiKey, array $defaultOptions = [])
     {
         $host = rtrim($host, '/');
 
@@ -106,42 +123,33 @@ class Api
 
         $this->host = $host;
         $this->apiKey = $apiKey;
-        $this->requestOptions = [];
-
-        // set the default request options
-        $this->defaultRequestOptions = [
-            RequestOptions::HEADERS => [
-                'Accept' => 'application/json',
-            ],
-            RequestOptions::CONNECT_TIMEOUT => 15,
-            RequestOptions::TIMEOUT => 60,
-            RequestOptions::HTTP_ERRORS => false
-        ];
+        $this->options = [];
+        $this->defaultOptions = $defaultOptions;
     }
 
     /**
      * This ensures lazy loading of the endpoint classes
      *
      * @param string $name
-     * @return null
+     * @return Endpoint\Endpoint
      */
     public function __get($name)
     {
-        $className = 'Loevgaard\\Dandomain\\Api\\Endpoint\\'.ucfirst($name);
-        if (property_exists(static::class, $name)) {
-            if (!$this->{$name}) {
-                $this->{$name} = new $className($this);
-            }
-            return $this->{$name};
+        if (!property_exists(self::class, $name)) {
+            throw new \InvalidArgumentException('The property `'.$name.'` does not exist on `'.self::class.'`');
         }
-        $trace = debug_backtrace();
-        trigger_error(
-                'Undefined property via __get(): ' . $name .
-                ' in ' . $trace[0]['file'] .
-                ' on line ' . $trace[0]['line'],
-                E_USER_NOTICE
-            );
-        return null;
+
+        $className = 'Loevgaard\\Dandomain\\Api\\Endpoint\\'.ucfirst($name);
+
+        if (!class_exists($className)) {
+            throw new \InvalidArgumentException('Class `'.$className.'` does not exist or could not be autoloaded');
+        }
+
+        if (!$this->{$name}) {
+            $this->{$name} = new $className($this);
+        }
+
+        return $this->{$name};
     }
 
     /**
@@ -150,26 +158,38 @@ class Api
      *
      * @param string $method
      * @param string $uri
+     * @param array|\stdClass $body The body is sent as JSON
      * @param array $options
      * @return mixed
      */
-    public function doRequest(string $method, string $uri, array $options = [])
+    public function doRequest(string $method, string $uri, $body = null, array $options = [])
     {
-        $parsedResponse = ['errors' => []];
+        $parsedResponse = [];
 
         try {
-            // and return an error object according to http://jsonapi.org/format/#errors
-
             // merge all options
             // the priority is
             // 1. options supplied by the user
             // 2. options supplied by the method calling
             // 3. the default options
-            $options = array_merge($this->defaultRequestOptions, $options, $this->requestOptions);
+            $options = $this->resolveOptions($this->defaultOptions, $options, $this->options);
+
+            if (!empty($body)) {
+                $body = $this->objectToArray($body);
+                Assert::that($body)->notEmpty('The body of the request cannot be empty');
+
+                // the body will always override any other data sent
+                $options['requestOptions']['json'] = $body;
+            }
+
+            // save the resolved options
+            $this->lastOptions = $options;
+
+            // replace the {KEY} placeholder with the api key
             $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
 
             // do request
-            $this->response = $this->client->request($method, $url, $options);
+            $this->response = $this->client->request($method, $url, $options['requestOptions']);
 
             // parse response and create error object if the json decode throws an exception
             try {
@@ -183,24 +203,21 @@ class Api
             }
 
             if ($this->response->getStatusCode() !== 200) {
+                $parsedResponse['errors'] = [];
                 $parsedResponse['errors'][] = [
                     'status' => $this->response->getStatusCode(),
                     'detail' => 'See Api::$response for details'
                 ];
             }
         } catch (GuzzleException $e) {
+            $parsedResponse['errors'] = [];
             $parsedResponse['errors'][] = [
                 'title' => 'Unexpected error',
                 'detail' => $e->getMessage()
             ];
         } finally {
             // reset request options
-            $this->requestOptions = [];
-
-            // unset errors if empty
-            if (isset($parsedResponse['errors']) && empty($parsedResponse['errors'])) {
-                unset($parsedResponse['errors']);
-            }
+            $this->options = [];
         }
 
         return $parsedResponse;
@@ -241,24 +258,70 @@ class Api
     /**
      * Sets request options for the next request
      *
-     * @param array $requestOptions
+     * @param array $options
      * @return Api
      */
-    public function setRequestOptions(array $requestOptions) : Api
+    public function setOptions(array $options) : Api
     {
-        $this->requestOptions = $requestOptions;
+        $this->options = $options;
         return $this;
     }
 
     /**
      * Sets default request options
      *
-     * @param array $defaultRequestOptions
+     * Notice that these options effectively are merged with the options in Api::resolveOptions
+     * so if you want to override those, you need to supply all those options
+     *
+     * @param array $defaultOptions
      * @return Api
      */
-    public function setDefaultRequestOptions(array $defaultRequestOptions) : Api
+    public function setDefaultOptions(array $defaultOptions) : Api
     {
-        $this->defaultRequestOptions = $defaultRequestOptions;
+        $this->defaultOptions = $defaultOptions;
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLastOptions(): array
+    {
+        return $this->lastOptions;
+    }
+
+    /**
+     * Helper method to convert a \stdClass into an array
+     *
+     * @param $obj
+     * @return array
+     */
+    protected function objectToArray($obj) : array
+    {
+        if ($obj instanceof \stdClass) {
+            $obj = json_decode(json_encode($obj), true);
+        }
+
+        return (array)$obj;
+    }
+
+    protected function resolveOptions(array ...$options) : array
+    {
+        $computedOptions = [
+            'requestOptions' => [
+                RequestOptions::HEADERS => [
+                    'Accept' => 'application/json',
+                ],
+                RequestOptions::CONNECT_TIMEOUT => 15,
+                RequestOptions::TIMEOUT => 60,
+                RequestOptions::HTTP_ERRORS => false
+            ]
+        ];
+
+        foreach ($options as $arr) {
+            $computedOptions = array_replace_recursive($computedOptions, $arr);
+        }
+
+        return $computedOptions;
     }
 }

@@ -35,10 +35,7 @@ class Order extends Endpoint
      */
     public function createOrder($order) : array
     {
-        $order = $this->objectToArray($order);
-        Assert::that($order)->notEmpty('$order must not be empty');
-
-        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}', ['json' => $order]);
+        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}', $order);
     }
 
     /**
@@ -224,6 +221,8 @@ class Order extends Endpoint
      */
     public function copyOrder(int $orderId, array $orderLines = [], int $orderState = 0, bool $completeOrder = true) : array
     {
+        Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
+
         $order = $this->getOrder($orderId);
 
         $data = [

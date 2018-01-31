@@ -13,10 +13,7 @@ class RelatedData extends Endpoint
      */
     public function getManufacturers() : array
     {
-        return (array)$this->master->doRequest(
-            'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Manufacturers'
-        );
+        return (array)$this->master->doRequest('GET', '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Manufacturers');
     }
 
     /**
@@ -24,10 +21,7 @@ class RelatedData extends Endpoint
      */
     public function getPeriods() : array
     {
-        return (array)$this->master->doRequest(
-            'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Periods'
-        );
+        return (array)$this->master->doRequest('GET', '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Periods');
     }
 
     /**
@@ -35,10 +29,7 @@ class RelatedData extends Endpoint
      */
     public function getProductTypes() : array
     {
-        return (array)$this->master->doRequest(
-            'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/ProductTypes'
-        );
+        return (array)$this->master->doRequest('GET', '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/ProductTypes');
     }
 
     /**
@@ -46,26 +37,20 @@ class RelatedData extends Endpoint
      */
     public function getSegments() : array
     {
-        return (array)$this->master->doRequest(
-            'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments'
-        );
+        return (array)$this->master->doRequest('GET', '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments');
     }
 
     /**
      * @param int $siteId
      * @return array
      */
-    public function getSegmentsForSite($siteId) : array
+    public function getSegmentsForSite(int $siteId) : array
     {
         Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
         return (array)$this->master->doRequest(
             'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments/%d',
-                $siteId
-            )
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Segments/%d', $siteId)
         );
     }
 
@@ -74,26 +59,20 @@ class RelatedData extends Endpoint
      */
     public function getUnits() : array
     {
-        return (array)$this->master->doRequest(
-            'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units'
-        );
+        return (array)$this->master->doRequest('GET', '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units');
     }
 
     /**
      * @param int $siteId
      * @return array
      */
-    public function getUnitsForSite($siteId) : array
+    public function getUnitsForSite(int $siteId) : array
     {
         Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
         return (array)$this->master->doRequest(
             'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units/%d',
-                $siteId
-            )
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/Units/%d', $siteId)
         );
     }
 
@@ -102,26 +81,20 @@ class RelatedData extends Endpoint
      */
     public function getVariantGroups() : array
     {
-        return (array)$this->master->doRequest(
-            'GET',
-            '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups'
-        );
+        return (array)$this->master->doRequest('GET', '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups');
     }
 
     /**
      * @param int $siteId
      * @return array
      */
-    public function getVariantGroupsForSite($siteId) : array
+    public function getVariantGroupsForSite(int $siteId) : array
     {
         Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
 
         return (array)$this->master->doRequest(
             'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups/%d',
-                $siteId
-            )
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/RelatedDataService/{KEY}/VariantGroups/%d', $siteId)
         );
     }
 }

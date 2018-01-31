@@ -14,19 +14,4 @@ abstract class Endpoint
     {
         $this->master = $master;
     }
-
-    /**
-     * Helper method to convert a \stdClass into an array
-     *
-     * @param $obj
-     * @return array
-     */
-    public function objectToArray($obj) : array
-    {
-        if ($obj instanceof \stdClass) {
-            $obj = json_decode(json_encode($obj), true);
-        }
-
-        return (array)$obj;
-    }
 }
