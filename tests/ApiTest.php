@@ -59,18 +59,16 @@ final class ApiTest extends TestCase
 
         $api = $this->getApi($client);
         $api->setDefaultOptions([
-            'requestOptions' => [
-                RequestOptions::TIMEOUT => 600,
-            ]
+            RequestOptions::TIMEOUT => 600,
         ]);
         $api->customer->getCustomer(1);
 
         // test the option we changed
-        $this->assertSame(600, $api->getLastOptions()['requestOptions'][RequestOptions::TIMEOUT]);
+        $this->assertSame(600, $api->getLastOptions()[RequestOptions::TIMEOUT]);
 
         // test that the existing options are still present
-        $this->assertSame('application/json', $api->getLastOptions()['requestOptions'][RequestOptions::HEADERS]['Accept']);
-        $this->assertSame(15, $api->getLastOptions()['requestOptions'][RequestOptions::CONNECT_TIMEOUT]);
-        $this->assertFalse($api->getLastOptions()['requestOptions'][RequestOptions::HTTP_ERRORS]);
+        $this->assertSame('application/json', $api->getLastOptions()[RequestOptions::HEADERS]['Accept']);
+        $this->assertSame(15, $api->getLastOptions()[RequestOptions::CONNECT_TIMEOUT]);
+        $this->assertFalse($api->getLastOptions()[RequestOptions::HTTP_ERRORS]);
     }
 }

@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * @property Endpoint\Customer $customer
@@ -179,7 +180,7 @@ class Api
                 Assert::that($body)->notEmpty('The body of the request cannot be empty');
 
                 // the body will always override any other data sent
-                $options['requestOptions']['json'] = $body;
+                $options['json'] = $body;
             }
 
             // save the resolved options
@@ -189,7 +190,7 @@ class Api
             $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
 
             // do request
-            $this->response = $this->client->request($method, $url, $options['requestOptions']);
+            $this->response = $this->client->request($method, $url, $options);
 
             // parse response and create error object if the json decode throws an exception
             try {
@@ -270,9 +271,6 @@ class Api
     /**
      * Sets default request options
      *
-     * Notice that these options effectively are merged with the options in Api::resolveOptions
-     * so if you want to override those, you need to supply all those options
-     *
      * @param array $defaultOptions
      * @return Api
      */
@@ -305,23 +303,34 @@ class Api
         return (array)$obj;
     }
 
+    protected function configureOptions(OptionsResolver $resolver) : void
+    {
+        $refl = new \ReflectionClass(RequestOptions::class);
+
+        $resolver->setDefined(array_values($refl->getConstants()));
+
+        $resolver->setDefaults([
+            RequestOptions::HEADERS => [
+                'Accept' => 'application/json',
+            ],
+            RequestOptions::CONNECT_TIMEOUT => 15,
+            RequestOptions::TIMEOUT => 60,
+            RequestOptions::HTTP_ERRORS => false
+        ]);
+    }
+
     protected function resolveOptions(array ...$options) : array
     {
-        $computedOptions = [
-            'requestOptions' => [
-                RequestOptions::HEADERS => [
-                    'Accept' => 'application/json',
-                ],
-                RequestOptions::CONNECT_TIMEOUT => 15,
-                RequestOptions::TIMEOUT => 60,
-                RequestOptions::HTTP_ERRORS => false
-            ]
-        ];
+        $computedOptions = [];
 
         foreach ($options as $arr) {
             $computedOptions = array_replace_recursive($computedOptions, $arr);
         }
 
-        return $computedOptions;
+        $resolver = new OptionsResolver();
+        $this->configureOptions($resolver);
+        $options = $resolver->resolve($computedOptions);
+
+        return $options;
     }
 }
