@@ -2,6 +2,7 @@
 namespace Loevgaard\Dandomain\Api\Endpoint;
 
 use Assert\Assert;
+use Loevgaard\Dandomain\Api\KeyValue\KeyValueCollection;
 
 class ProductData extends Endpoint
 {
@@ -322,29 +323,19 @@ class ProductData extends Endpoint
     }
 
     /**
-     * Use a key value structure to patch a product, i.e.
-     *
-     * $data = [
-     *   'keyValues' => [
-     *     ['Key' => 'property', 'Value' => 'new value of property']
-     *   ]
-     * ]
-     *
      * @param string $productNumber
-     * @param array $data
+     * @param KeyValueCollection $keyValueCollection
      * @return array
      */
-    public function patchProduct(string $productNumber, array $data) : array
+    public function patchProduct(string $productNumber, KeyValueCollection $keyValueCollection) : array
     {
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-        Assert::that($data)->keyExists('keyValues');
-        Assert::that($data['keyValues'])->isArray()->notEmpty();
-        Assert::thatAll($data['keyValues'])->keyExists('Key')->keyExists('Value');
+        Assert::that($keyValueCollection->count())->greaterThan(0);
 
         return (array)$this->master->doRequest(
             'PATCH',
             sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s', rawurlencode($productNumber)),
-            $data
+            $keyValueCollection->get()
         );
     }
 
@@ -395,26 +386,16 @@ class ProductData extends Endpoint
     }
 
     /**
-     * Use a key value structure to patch product settings, i.e.
-     *
-     * $data = [
-     *   'keyValues' => [
-     *     ['Key' => 'property', 'Value' => 'new value of property']
-     *   ]
-     * ]
-     *
      * @param int $siteId
      * @param string $productNumber
-     * @param array $data
+     * @param KeyValueCollection $keyValueCollection
      * @return array
      */
-    public function patchProductSettings(int $siteId, string $productNumber, array $data) : array
+    public function patchProductSettings(int $siteId, string $productNumber, KeyValueCollection $keyValueCollection) : array
     {
         Assert::that($siteId)->greaterThan(0, 'The $siteId has to be positive');
         Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-        Assert::that($data)->keyExists('keyValues');
-        Assert::that($data['keyValues'])->isArray()->notEmpty();
-        Assert::thatAll($data['keyValues'])->keyExists('Key')->keyExists('Value');
+        Assert::that($keyValueCollection->count())->greaterThan(0);
 
         return (array)$this->master->doRequest(
             'PATCH',
@@ -423,7 +404,7 @@ class ProductData extends Endpoint
                 $siteId,
                 rawurlencode($productNumber)
             ),
-            $data
+            $keyValueCollection->get()
         );
     }
 }
