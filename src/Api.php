@@ -139,13 +139,13 @@ class Api
             throw new \InvalidArgumentException('The property `'.$name.'` does not exist on `'.self::class.'`');
         }
 
-        $className = 'Loevgaard\\Dandomain\\Api\\Endpoint\\'.ucfirst($name);
-
-        if (!class_exists($className)) {
-            throw new \InvalidArgumentException('Class `'.$className.'` does not exist or could not be autoloaded');
-        }
-
         if (!$this->{$name}) {
+            $className = 'Loevgaard\\Dandomain\\Api\\Endpoint\\'.ucfirst($name);
+
+            if (!class_exists($className)) {
+                throw new \InvalidArgumentException('Class `'.$className.'` does not exist or could not be autoloaded');
+            }
+
             $this->{$name} = new $className($this);
         }
 
