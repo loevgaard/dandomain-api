@@ -37,6 +37,20 @@ class Customer extends Endpoint
             sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/GetCustomerByEmail?email=%s', rawurlencode($email))
         );
     }
+    
+    /**
+     * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#General_Online_Reference
+     *
+     * @param  \DateTimeInterface $date
+     * @return array      
+     */
+    public function createdSince(\DateTimeInterface $date) : array
+    {
+        return (array)$this->master->doRequest(
+            'GET',
+            sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/CreatedSince?date=%s', $date->format('Y-m-d\TH:i:s'))
+        );
+    }
 
     /**
      * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#CreateCustomer_POST
