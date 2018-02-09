@@ -303,7 +303,7 @@ class Api
         return (array)$obj;
     }
 
-    protected function configureOptions(OptionsResolver $resolver) : void
+    protected function configureOptions(OptionsResolver $resolver)
     {
         $refl = new \ReflectionClass(RequestOptions::class);
 
