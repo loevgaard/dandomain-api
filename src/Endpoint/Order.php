@@ -11,7 +11,7 @@ class Order extends Endpoint
      * @param int|null $orderStateId
      * @return int
      */
-    public function countByModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, ?int $orderStateId = null) : int
+    public function countByModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, int $orderStateId = null) : int
     {
         Assert::that($dateStart)->lessThan($dateEnd, '$dateStart must be before $dateEnd');
         Assert::thatNullOr($orderStateId)->integer('$orderStateId must be an integer');
@@ -117,7 +117,7 @@ class Order extends Endpoint
      * @param int|null $orderStateId
      * @return array
      */
-    public function getOrdersInModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, int $page = 1, int $pageSize = 100, ?int $orderStateId = null) : array
+    public function getOrdersInModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, int $page = 1, int $pageSize = 100, int $orderStateId = null) : array
     {
         Assert::that($dateStart)->lessThan($dateEnd, '$dateStart must be before $dateEnd');
         Assert::that($page)->greaterThan(0, 'The $page has to be positive');
