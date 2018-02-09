@@ -190,7 +190,7 @@ class Api
             $url = $this->host . str_replace('{KEY}', $this->apiKey, $uri);
 
             // do request
-            $this->response = $this->client->request($method, $url, $options);
+            $this->response = $this->getClient()->request($method, $url, $options);
 
             // parse response and create error object if the json decode throws an exception
             try {
