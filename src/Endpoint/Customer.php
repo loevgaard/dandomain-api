@@ -44,7 +44,7 @@ class Customer extends Endpoint
      * @param  \DateTimeInterface $date
      * @return array      
      */
-    public function createdSince(\DateTimeInterface $date) : array
+    public function getCustomersCreatedSince(\DateTimeInterface $date) : array
     {
         return (array)$this->master->doRequest(
             'GET',
