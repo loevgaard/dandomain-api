@@ -19,7 +19,7 @@ final class ApiTest extends TestCase
 {
     public function testGetMagicGetters()
     {
-        $api = new Api('http://www.example.com', 'apikeyapikeyapikeyapikeyapikeyapikey');
+        $api = new Client('http://www.example.com', 'apikeyapikeyapikeyapikeyapikeyapikey');
 
         $endpoint = $api->customer;
         $this->assertInstanceOf(Customer::class, $endpoint);

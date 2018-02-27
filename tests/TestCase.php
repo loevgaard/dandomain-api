@@ -6,9 +6,9 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    protected function getApi(ClientInterface $client = null) : Api
+    protected function getApi(ClientInterface $client = null) : Client
     {
-        $api = new Api('https://example.com', 'apikeyapikeyapikeyapikeyapikeyapikey');
+        $api = new Client('https://example.com', 'apikeyapikeyapikeyapikeyapikeyapikey');
 
         if ($client) {
             $api->setClient($client);
