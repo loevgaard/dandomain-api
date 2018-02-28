@@ -19,6 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * @property Endpoint\ProductTag $productTag
  * @property Endpoint\RelatedData $relatedData
  * @property Endpoint\Settings $settings
+ * @property Endpoint\Plugin $plugin
  */
 class Api
 {
@@ -114,6 +115,11 @@ class Api
      * @var Endpoint\Settings;
      */
     protected $settings;
+    
+    /**
+     * @var Endpoint\Plugin;
+     */
+    protected $plugin;
 
     public function __construct(string $host, string $apiKey, array $defaultOptions = [])
     {
