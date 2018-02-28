@@ -15,20 +15,14 @@ class UpdateCustomerRequest extends Request
      */
     protected $customerId;
 
-    /**
-     * @var array
-     */
-    protected $customer;
-
     public function __construct(int $customerId, array $customer)
     {
-        Assert::that($customer)->notEmpty();
         Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
+        Assert::that($customer)->notEmpty();
 
         $this->customerId = $customerId;
-        $this->customer = $customer;
 
-        parent::__construct(RequestInterface::METHOD_PUT, sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d', $this->customerId), $this->customer);
+        parent::__construct(RequestInterface::METHOD_PUT, sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d', $this->customerId), $customer);
     }
 
     /**
@@ -37,13 +31,5 @@ class UpdateCustomerRequest extends Request
     public function getCustomerId(): int
     {
         return $this->customerId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCustomer(): array
-    {
-        return $this->customer;
     }
 }

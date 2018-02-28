@@ -10,25 +10,10 @@ use Loevgaard\Dandomain\Api\Request\RequestInterface;
  */
 class CreateCustomerRequest extends Request
 {
-    /**
-     * @var array
-     */
-    protected $customer;
-
     public function __construct(array $customer)
     {
         Assert::that($customer)->notEmpty();
 
-        $this->customer = $customer;
-
-        parent::__construct(RequestInterface::METHOD_POST, '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}', $this->customer);
-    }
-
-    /**
-     * @return array
-     */
-    public function getCustomer(): array
-    {
-        return $this->customer;
+        parent::__construct(RequestInterface::METHOD_POST, '/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}', $customer);
     }
 }

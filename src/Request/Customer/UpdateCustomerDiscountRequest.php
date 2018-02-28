@@ -15,20 +15,14 @@ class UpdateCustomerDiscountRequest extends Request
      */
     protected $customerId;
 
-    /**
-     * @var array
-     */
-    protected $customerDiscount;
-
     public function __construct(int $customerId, array $customerDiscount)
     {
         Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
         Assert::that($customerDiscount)->notEmpty();
 
         $this->customerId = $customerId;
-        $this->customerDiscount = $customerDiscount;
 
-        parent::__construct(RequestInterface::METHOD_POST, sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/UpdateCustomerDiscount/%d', $this->customerId), $this->customerDiscount);
+        parent::__construct(RequestInterface::METHOD_POST, sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/UpdateCustomerDiscount/%d', $this->customerId), $customerDiscount);
     }
 
     /**
@@ -37,13 +31,5 @@ class UpdateCustomerDiscountRequest extends Request
     public function getCustomerId(): int
     {
         return $this->customerId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCustomerDiscount(): array
-    {
-        return $this->customerDiscount;
     }
 }
