@@ -5,35 +5,38 @@ use Assert\Assert;
 use Loevgaard\Dandomain\Api\Request\Request;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
-abstract class GetDiscountRequest extends Request
+abstract class CountDiscountsRequest extends Request
 {
     /**
      * @var int
      */
-    protected $id;
+    protected $siteId;
 
     /**
      * @var string
      */
     protected $type;
 
-    public function __construct(int $id, string $type)
+    public function __construct(int $siteId, string $type)
     {
-        Assert::that($id)->greaterThan(0, 'The id must be positive');
+        Assert::that($siteId)->greaterThan(0, 'The siteId must be positive');
         Assert::that($type)->choice(DiscountType::getTypes());
 
-        $this->id = $id;
+        // append plural
+        $type .= 's';
+
+        $this->siteId = $siteId;
         $this->type = $type;
 
-        parent::__construct(RequestInterface::METHOD_GET, sprintf('/admin/WEBAPI/Endpoints/v1_0/DiscountService/{KEY}/%s/%d', $this->type, $this->id));
+        parent::__construct(RequestInterface::METHOD_GET, sprintf('/admin/WEBAPI/Endpoints/v1_0/DiscountService/{KEY}/%s/%d', $this->type, $this->siteId));
     }
 
     /**
      * @return int
      */
-    public function getId(): int
+    public function getSiteId(): int
     {
-        return $this->id;
+        return $this->siteId;
     }
 
     /**
