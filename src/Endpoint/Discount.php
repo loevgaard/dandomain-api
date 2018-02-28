@@ -37,15 +37,6 @@ class Discount extends Endpoint
     }
 
     /**
-     * @param int $id
-     * @return array
-     */
-    public function getFreeShippingDiscount(int $id) : array
-    {
-        return $this->getDiscount($id, self::TYPE_FREE_SHIPPING);
-    }
-
-    /**
      * @param int $siteId
      * @param int $page
      * @param int $pageSize
