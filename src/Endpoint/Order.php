@@ -58,44 +58,6 @@ class Order extends Endpoint
     }
 
     /**
-     * @param int $orderId
-     * @return array
-     */
-    public function getOrder(int $orderId) : array
-    {
-        Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
-
-        return (array)$this->master->doRequest('GET', sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/%d', $orderId));
-    }
-
-    /**
-     * Deletes an order
-     *
-     * @param int $orderId
-     * @return bool
-     */
-    public function deleteOrder(int $orderId) : bool
-    {
-        Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
-
-        return (bool)$this->master->doRequest('DELETE', sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/%d', $orderId));
-    }
-
-    /**
-     * @param int $orderId
-     * @return bool
-     */
-    public function completeOrder(int $orderId) : bool
-    {
-        Assert::that($orderId)->greaterThan(0, 'The $orderId has to be positive');
-
-        return (bool)$this->master->doRequest(
-            'PUT',
-            sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/CompleteOrder/%d', $orderId)
-        );
-    }
-
-    /**
      * @param int $customerNumber
      * @return array
      */
