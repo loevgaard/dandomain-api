@@ -1,10 +1,10 @@
 <?php
 namespace Loevgaard\Dandomain\Api\Request\Order;
 
-use Loevgaard\Dandomain\Api\Request\Request;
+use Loevgaard\Dandomain\Api\Request\CollectionRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
-class GetOrderStatesRequest extends Request
+class GetOrderStatesRequest extends CollectionRequest
 {
     public function __construct()
     {

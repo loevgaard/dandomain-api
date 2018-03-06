@@ -6,58 +6,6 @@ use Assert\Assert;
 class Order extends Endpoint
 {
     /**
-     * @param \DateTimeInterface $dateStart
-     * @param \DateTimeInterface $dateEnd
-     * @param int|null $orderStateId
-     * @return int
-     */
-    public function countByModifiedInterval(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd, int $orderStateId = null) : int
-    {
-        Assert::that($dateStart)->lessThan($dateEnd, '$dateStart must be before $dateEnd');
-        Assert::thatNullOr($orderStateId)->integer('$orderStateId must be an integer');
-
-        $q = sprintf(
-            '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/CountByModifiedInterval?start=%s&end=%s',
-            $dateStart->format('Y-m-d\TH:i:s'),
-            $dateEnd->format('Y-m-d\TH:i:s')
-        );
-
-        if ($orderStateId) {
-            $q .= sprintf('&orderstateid=%d', $orderStateId);
-        }
-
-        return (int)$this->master->doRequest('GET', $q);
-    }
-
-    /**
-     * @param array|\stdClass $order
-     * @return array
-     */
-    public function createOrder($order) : array
-    {
-        return (array)$this->master->doRequest('POST', '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}', $order);
-    }
-
-    /**
-     * @param \DateTimeInterface $dateStart
-     * @param \DateTimeInterface $dateEnd
-     * @return array
-     */
-    public function getOrders(\DateTimeInterface $dateStart, \DateTimeInterface $dateEnd) : array
-    {
-        Assert::that($dateStart)->lessThan($dateEnd, '$dateStart must be before $dateEnd');
-
-        return (array)$this->master->doRequest(
-            'GET',
-            sprintf(
-                '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByDateInterval?start=%s&end=%s',
-                $dateStart->format('Y-m-d'),
-                $dateEnd->format('Y-m-d')
-            )
-        );
-    }
-
-    /**
      * @param int $customerNumber
      * @return array
      */

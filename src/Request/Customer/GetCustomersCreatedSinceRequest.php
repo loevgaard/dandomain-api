@@ -2,13 +2,13 @@
 namespace Loevgaard\Dandomain\Api\Request\Customer;
 
 use Assert\Assert;
-use Loevgaard\Dandomain\Api\Request\Request;
+use Loevgaard\Dandomain\Api\Request\CollectionRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
 /**
  * @see http://4221117.shop53.dandomain.dk/admin/webapi/endpoints/v1_0/CustomerService/help/operations/GetCustomersCreatedSince
  */
-class GetCustomersCreatedSinceRequest extends Request
+class GetCustomersCreatedSinceRequest extends CollectionRequest
 {
     /**
      * @var \DateTimeInterface

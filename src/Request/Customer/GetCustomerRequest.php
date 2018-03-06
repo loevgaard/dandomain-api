@@ -2,13 +2,13 @@
 namespace Loevgaard\Dandomain\Api\Request\Customer;
 
 use Assert\Assert;
-use Loevgaard\Dandomain\Api\Request\Request;
+use Loevgaard\Dandomain\Api\Request\ObjectRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
 /**
  * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#GetCustomer_GET
  */
-class GetCustomerRequest extends Request
+class GetCustomerRequest extends ObjectRequest
 {
     /**
      * @var int

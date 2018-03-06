@@ -2,10 +2,10 @@
 namespace Loevgaard\Dandomain\Api\Request\Order;
 
 use Assert\Assert;
-use Loevgaard\Dandomain\Api\Request\Request;
+use Loevgaard\Dandomain\Api\Request\ObjectRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
-class GetOrderRequest extends Request
+class GetOrderRequest extends ObjectRequest
 {
     /**
      * @var int

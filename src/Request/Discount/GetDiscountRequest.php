@@ -2,10 +2,10 @@
 namespace Loevgaard\Dandomain\Api\Request\Customer;
 
 use Assert\Assert;
-use Loevgaard\Dandomain\Api\Request\Request;
+use Loevgaard\Dandomain\Api\Request\ObjectRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
-abstract class GetDiscountRequest extends Request
+abstract class GetDiscountRequest extends ObjectRequest
 {
     /**
      * @var int

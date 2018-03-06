@@ -2,7 +2,6 @@
 namespace Loevgaard\Dandomain\Api\Request;
 
 use Assert\Assert;
-use Loevgaard\Dandomain\Api\Response\Response;
 
 abstract class Request implements RequestInterface
 {
@@ -49,10 +48,5 @@ abstract class Request implements RequestInterface
     public function getBody(): array
     {
         return $this->body;
-    }
-
-    public function getResponseClass(): string
-    {
-        return Response::class;
     }
 }

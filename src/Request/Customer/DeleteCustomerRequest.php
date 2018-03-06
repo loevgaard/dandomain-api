@@ -2,13 +2,13 @@
 namespace Loevgaard\Dandomain\Api\Request\Customer;
 
 use Assert\Assert;
-use Loevgaard\Dandomain\Api\Request\Request;
+use Loevgaard\Dandomain\Api\Request\BoolRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
 /**
  * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#DeleteCustomer_DELETE
  */
-class DeleteCustomerRequest extends Request
+class DeleteCustomerRequest extends BoolRequest
 {
     /**
      * @var int

@@ -1,13 +1,13 @@
 <?php
 namespace Loevgaard\Dandomain\Api\Request\Customer;
 
-use Loevgaard\Dandomain\Api\Request\Request;
+use Loevgaard\Dandomain\Api\Request\CollectionRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
 /**
  * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#GetCustomerGroups_GET
  */
-class GetCustomerGroupsRequest extends Request
+class GetCustomerGroupsRequest extends CollectionRequest
 {
     public function __construct()
     {

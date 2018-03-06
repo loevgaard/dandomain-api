@@ -2,13 +2,13 @@
 namespace Loevgaard\Dandomain\Api\Request\Customer;
 
 use Assert\Assert;
-use Loevgaard\Dandomain\Api\Request\Request;
+use Loevgaard\Dandomain\Api\Request\BoolRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
 
 /**
  * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#UpdateCustomerDiscountPOST
  */
-class UpdateCustomerDiscountRequest extends Request
+class UpdateCustomerDiscountRequest extends BoolRequest
 {
     /**
      * @var int
