@@ -5,13 +5,14 @@ use Assert\Assert;
 use Loevgaard\Dandomain\Api\DateTime\DateInterval;
 use Loevgaard\Dandomain\Api\Request\CollectionRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
+use Loevgaard\Dandomain\Api\Traits\DateIntervalTrait;
+use Loevgaard\Dandomain\Api\Traits\OrderStateIdTrait;
+use Loevgaard\Dandomain\Api\ValueObject\OrderStateId;
 
 class GetOrdersInModifiedIntervalRequest extends CollectionRequest
 {
-    /**
-     * @var DateInterval
-     */
-    protected $interval;
+    use DateIntervalTrait;
+    use OrderStateIdTrait;
 
     /**
      * @var int
@@ -23,43 +24,29 @@ class GetOrdersInModifiedIntervalRequest extends CollectionRequest
      */
     protected $pageSize;
 
-    /**
-     * @var int
-     */
-    protected $orderState;
-
-    public function __construct(DateInterval $interval, int $page = 1, int $pageSize = 100, int $orderState = 0)
+    public function __construct(DateInterval $dateInterval, int $page = 1, int $pageSize = 100, OrderStateId $orderStateId = null)
     {
         Assert::that($page)->greaterThan(0, 'The page must be positive');
         Assert::that($pageSize)->greaterThan(0, 'The pageSize must be positive');
-        Assert::that($orderState)->greaterOrEqualThan(0, 'The orderState must be positive');
 
-        $this->interval = $interval;
+        $this->dateInterval = $dateInterval;
         $this->page = $page;
         $this->pageSize = $pageSize;
-        $this->orderState = $orderState;
+        $this->orderStateId = $orderStateId;
 
         $q = sprintf(
             '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByModifiedInterval?start=%s&end=%s&pageIndex=%d&pageSize=%d',
-            $this->interval->getStart()->format('Y-m-d\TH:i:s'),
-            $this->interval->getEnd()->format('Y-m-d\TH:i:s'),
+            $this->dateInterval->getStart()->format('Y-m-d\TH:i:s'),
+            $this->dateInterval->getEnd()->format('Y-m-d\TH:i:s'),
             $this->page,
             $this->pageSize
         );
 
-        if ($this->orderState) {
-            $q .= sprintf('&orderstateid=%d', $this->orderState);
+        if ($this->orderStateId) {
+            $q .= sprintf('&orderstateid=%s', $this->orderStateId);
         }
 
         parent::__construct(RequestInterface::METHOD_GET, $q);
-    }
-
-    /**
-     * @return DateInterval
-     */
-    public function getInterval(): DateInterval
-    {
-        return $this->interval;
     }
 
     /**
@@ -76,13 +63,5 @@ class GetOrdersInModifiedIntervalRequest extends CollectionRequest
     public function getPageSize(): int
     {
         return $this->pageSize;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrderState(): int
-    {
-        return $this->orderState;
     }
 }

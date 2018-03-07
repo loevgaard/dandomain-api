@@ -1,31 +1,19 @@
 <?php
 namespace Loevgaard\Dandomain\Api\Request\Order;
 
-use Assert\Assert;
 use Loevgaard\Dandomain\Api\Request\CollectionRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
+use Loevgaard\Dandomain\Api\Traits\CustomerNumberTrait;
+use Loevgaard\Dandomain\Api\ValueObject\CustomerNumber;
 
 class GetOrdersByCustomerNumberRequest extends CollectionRequest
 {
-    /**
-     * @var int
-     */
-    protected $customerNumber;
+    use CustomerNumberTrait;
 
-    public function __construct(int $customerNumber)
+    public function __construct(CustomerNumber $customerNumber)
     {
-        Assert::that($customerNumber)->greaterThan(0, 'The customerNumber must be positive');
-
         $this->customerNumber = $customerNumber;
 
-        parent::__construct(RequestInterface::METHOD_GET, sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByCustomerNumber/%d', $this->customerNumber));
-    }
-
-    /**
-     * @return int
-     */
-    public function getCustomerNumber(): int
-    {
-        return $this->customerNumber;
+        parent::__construct(RequestInterface::METHOD_GET, sprintf('/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByCustomerNumber/%s', $this->customerNumber));
     }
 }

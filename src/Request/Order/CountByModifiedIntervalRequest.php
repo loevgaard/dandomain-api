@@ -1,56 +1,33 @@
 <?php
 namespace Loevgaard\Dandomain\Api\Request\Order;
 
-use Assert\Assert;
 use Loevgaard\Dandomain\Api\DateTime\DateInterval;
 use Loevgaard\Dandomain\Api\Request\IntRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
+use Loevgaard\Dandomain\Api\Traits\DateIntervalTrait;
+use Loevgaard\Dandomain\Api\Traits\OrderStateIdTrait;
+use Loevgaard\Dandomain\Api\ValueObject\OrderStateId;
 
 class CountByModifiedIntervalRequest extends IntRequest
 {
-    /**
-     * @var DateInterval
-     */
-    protected $interval;
+    use OrderStateIdTrait;
+    use DateIntervalTrait;
 
-    /**
-     * @var int
-     */
-    protected $orderState;
-
-    public function __construct(DateInterval $interval, int $orderState = 0)
+    public function __construct(DateInterval $dateInterval, OrderStateId $orderStateId = null)
     {
-        Assert::that($orderState)->greaterOrEqualThan(0);
-
-        $this->interval = $interval;
-        $this->orderState = $orderState;
+        $this->dateInterval = $dateInterval;
+        $this->orderStateId = $orderStateId;
 
         $q = sprintf(
             '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/CountByModifiedInterval?start=%s&end=%s',
-            $interval->getStart()->format('Y-m-d\TH:i:s'),
-            $interval->getEnd()->format('Y-m-d\TH:i:s')
+            $this->dateInterval->getStart()->format('Y-m-d\TH:i:s'),
+            $this->dateInterval->getEnd()->format('Y-m-d\TH:i:s')
         );
 
-        if ($this->orderState) {
-            $q .= sprintf('&orderstateid=%d', $this->orderState);
+        if ($this->orderStateId) {
+            $q .= sprintf('&orderstateid=%s', $this->orderStateId);
         }
 
         parent::__construct(RequestInterface::METHOD_GET, $q);
-    }
-
-    /**
-     * @return DateInterval
-     */
-    public function getInterval(): DateInterval
-    {
-        return $this->interval;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrderState(): int
-    {
-        return $this->orderState;
     }
 }

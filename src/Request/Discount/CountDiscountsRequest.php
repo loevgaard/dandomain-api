@@ -4,22 +4,20 @@ namespace Loevgaard\Dandomain\Api\Request\Customer;
 use Assert\Assert;
 use Loevgaard\Dandomain\Api\Request\IntRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
+use Loevgaard\Dandomain\Api\Traits\SiteIdTrait;
+use Loevgaard\Dandomain\Api\ValueObject\SiteId;
 
 abstract class CountDiscountsRequest extends IntRequest
 {
-    /**
-     * @var int
-     */
-    protected $siteId;
+    use SiteIdTrait;
 
     /**
      * @var string
      */
     protected $type;
 
-    public function __construct(int $siteId, string $type)
+    public function __construct(SiteId $siteId, string $type)
     {
-        Assert::that($siteId)->greaterThan(0, 'The siteId must be positive');
         Assert::that($type)->choice(DiscountType::getTypes());
 
         // append plural
@@ -28,15 +26,7 @@ abstract class CountDiscountsRequest extends IntRequest
         $this->siteId = $siteId;
         $this->type = $type;
 
-        parent::__construct(RequestInterface::METHOD_GET, sprintf('/admin/WEBAPI/Endpoints/v1_0/DiscountService/{KEY}/%s/%d', $this->type, $this->siteId));
-    }
-
-    /**
-     * @return int
-     */
-    public function getSiteId(): int
-    {
-        return $this->siteId;
+        parent::__construct(RequestInterface::METHOD_GET, sprintf('/admin/WEBAPI/Endpoints/v1_0/DiscountService/{KEY}/%s/%s', $this->type, $this->siteId));
     }
 
     /**

@@ -4,32 +4,36 @@ namespace Loevgaard\Dandomain\Api\Request\Customer;
 use Assert\Assert;
 use Loevgaard\Dandomain\Api\Request\BoolRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
+use Loevgaard\Dandomain\Api\Traits\CustomerIdTrait;
+use Loevgaard\Dandomain\Api\ValueObject\CustomerId;
 
 /**
  * @see https://shoppartner.dandomain.dk/dokumentation/api-documentation/customer/#UpdateCustomer_PUT
  */
 class UpdateCustomerRequest extends BoolRequest
 {
-    /**
-     * @var int
-     */
-    protected $customerId;
+    use CustomerIdTrait;
 
-    public function __construct(int $customerId, array $customer)
+    /**
+     * @var array
+     */
+    protected $customer;
+
+    public function __construct(CustomerId $customerId, array $customer)
     {
-        Assert::that($customerId)->greaterThan(0, 'The $customerId has to be positive');
         Assert::that($customer)->notEmpty();
 
         $this->customerId = $customerId;
+        $this->customer = $customer;
 
-        parent::__construct(RequestInterface::METHOD_PUT, sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%d', $this->customerId), $customer);
+        parent::__construct(RequestInterface::METHOD_PUT, sprintf('/admin/WEBAPI/Endpoints/v1_0/CustomerService/{KEY}/%s', $this->customerId), $this->customer);
     }
 
     /**
-     * @return int
+     * @return array
      */
-    public function getCustomerId(): int
+    public function getCustomer(): array
     {
-        return $this->customerId;
+        return $this->customer;
     }
 }

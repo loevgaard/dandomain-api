@@ -4,13 +4,12 @@ namespace Loevgaard\Dandomain\Api\Request\Customer;
 use Assert\Assert;
 use Loevgaard\Dandomain\Api\Request\CollectionRequest;
 use Loevgaard\Dandomain\Api\Request\RequestInterface;
+use Loevgaard\Dandomain\Api\Traits\SiteIdTrait;
+use Loevgaard\Dandomain\Api\ValueObject\SiteId;
 
 abstract class GetDiscountsRequest extends CollectionRequest
 {
-    /**
-     * @var int
-     */
-    protected $siteId;
+    use SiteIdTrait;
 
     /**
      * @var int
@@ -27,9 +26,8 @@ abstract class GetDiscountsRequest extends CollectionRequest
      */
     protected $type;
 
-    public function __construct(int $siteId, int $page, int $pageSize, string $type)
+    public function __construct(SiteId $siteId, int $page, int $pageSize, string $type)
     {
-        Assert::that($siteId)->greaterThan(0, 'The siteId must be positive');
         Assert::that($page)->greaterThan(0, 'page must be positive');
         Assert::that($pageSize)->greaterThan(0, 'pageSize must be positive');
         Assert::that($type)->choice(DiscountType::getTypes());
@@ -42,15 +40,7 @@ abstract class GetDiscountsRequest extends CollectionRequest
         $this->pageSize = $pageSize;
         $this->type = $type;
 
-        parent::__construct(RequestInterface::METHOD_GET, sprintf('/admin/WEBAPI/Endpoints/v1_0/DiscountService/{KEY}/%s/%d/%d/%d', $this->type, $this->siteId, $this->page, $this->pageSize));
-    }
-
-    /**
-     * @return int
-     */
-    public function getSiteId(): int
-    {
-        return $this->siteId;
+        parent::__construct(RequestInterface::METHOD_GET, sprintf('/admin/WEBAPI/Endpoints/v1_0/DiscountService/{KEY}/%s/%s/%d/%d', $this->type, $this->siteId, $this->page, $this->pageSize));
     }
 
     /**
