@@ -25,11 +25,11 @@ class DateInterval
     public function __construct(DateTimeImmutable $start, DateTimeImmutable $end)
     {
         $now = new DateTimeImmutable();
-        if($end > $now) {
+        if ($end > $now) {
             $end = $now;
         }
 
-        if($start > $end) {
+        if ($start > $end) {
             throw new DateIntervalException('Start date is after end date. This is wrong.');
         }
 

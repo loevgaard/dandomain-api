@@ -103,7 +103,9 @@ class Client
         // send request
         $this->response = $this->httpClient->sendRequest($this->request);
 
-        return new Response($this->response, $request);
+        $responseClass = $request->getResponseClass();
+
+        return $responseClass($this->response, $request);
     }
 
     /**
