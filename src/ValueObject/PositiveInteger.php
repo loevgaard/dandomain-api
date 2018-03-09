@@ -18,13 +18,13 @@ abstract class PositiveInteger
         $this->value = $value;
     }
 
-    public function get() : int
-    {
-        return $this->value;
-    }
-
     public function __toString()
     {
         return (string)$this->value;
+    }
+
+    public function get() : int
+    {
+        return $this->value;
     }
 }

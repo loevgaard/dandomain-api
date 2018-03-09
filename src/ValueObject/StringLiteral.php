@@ -14,13 +14,13 @@ abstract class StringLiteral
         $this->value = $value;
     }
 
-    public function get() : string
-    {
-        return $this->value;
-    }
-
     public function __toString()
     {
         return (string)$this->value;
+    }
+
+    public function get() : string
+    {
+        return $this->value;
     }
 }

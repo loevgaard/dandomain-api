@@ -1,7 +1,7 @@
 <?php
 namespace Loevgaard\Dandomain\Api\KeyValue;
 
-use Loevgaard\Dandomain\Api\TestCase;
+use PHPUnit\Framework\TestCase;
 
 final class KeyValueBuilderTest extends TestCase
 {
