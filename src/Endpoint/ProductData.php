@@ -4,22 +4,8 @@ namespace Loevgaard\Dandomain\Api\Endpoint;
 use Assert\Assert;
 use Loevgaard\Dandomain\Api\KeyValue\KeyValueCollection;
 
-class ProductData extends Endpoint
+class ProductData
 {
-    /**
-     * @param string $productNumber
-     * @return array
-     */
-    public function getDataProduct(string $productNumber) : array
-    {
-        Assert::that($productNumber)->minLength(1, 'The length of $productNumber has to be > 0');
-
-        return (array)$this->master->doRequest(
-            'GET',
-            sprintf('/admin/WEBAPI/Endpoints/v1_0/ProductDataService/{KEY}/%s', rawurlencode($productNumber))
-        );
-    }
-
     /**
      * @param int $categoryId
      * @return array
