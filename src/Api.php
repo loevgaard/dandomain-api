@@ -209,7 +209,11 @@ class Api
                 ];
             }
 
-            if ($this->response->getStatusCode() !== 200) {
+            $statusCode = $this->response->getStatusCode();
+            if ($statusCode > 299 || $statusCode < 200) {
+                if (!is_array($parsedResponse)) {
+                    $parsedResponse = [];
+                }
                 $parsedResponse['errors'] = [];
                 $parsedResponse['errors'][] = [
                     'status' => $this->response->getStatusCode(),
