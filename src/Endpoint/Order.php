@@ -51,8 +51,8 @@ class Order extends Endpoint
             'GET',
             sprintf(
                 '/admin/WEBAPI/Endpoints/v1_0/OrderService/{KEY}/GetByDateInterval?start=%s&end=%s',
-                $dateStart->format('Y-m-d'),
-                $dateEnd->format('Y-m-d')
+                $dateStart->format('Y-m-d\TH:i:s'),
+                $dateEnd->format('Y-m-d\TH:i:s')
             )
         );
     }
